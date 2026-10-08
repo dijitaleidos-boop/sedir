@@ -1,0 +1,1682 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1F5C48">
+<meta name="robots" content="noindex">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Sedir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+:root{padding:env(safe-area-inset-top,0px) 0 0}
+/* Yerleşim: telefonda tek sütun + altta 5'li gezinme; geniş ekranda solda sabit menü, içerik en çok 1040px.
+   Renk: şişe yeşili (kadife döşeme) + keten grisi zemin. Durum renkleri (amber/kırmızı/mavi) ayrı tutulur. */
+:root{
+  --zemin:#F2F4EE; --yuzey:#FFFFFF; --yuzey2:#E8ECE3; --cizgi:#D5DACF;
+  --murekkep:#17201C; --soluk:#55615B;
+  --ana:#1F5C48; --ana-koyu:#164536; --ana-acik:#DFECE5; --ana-ustu:#FFFFFF;
+  --amber:#8A5206; --amber-z:#FAEDD3;
+  --kirmizi:#A33526; --kirmizi-z:#F8E2DD;
+  --mavi:#28557F; --mavi-z:#DFEAF4;
+  --golge:0 1px 2px rgba(23,32,28,.06), 0 8px 24px rgba(23,32,28,.07);
+  --perde:rgba(23,32,28,.5);
+  --f-baslik:'Bricolage Grotesque','Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-govde:'Figtree',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --r:12px; --r-k:8px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --zemin:#101513; --yuzey:#19201D; --yuzey2:#232C28; --cizgi:#34403A;
+    --murekkep:#ECF1EC; --soluk:#A0ADA6;
+    --ana:#62BC98; --ana-koyu:#7BCBAA; --ana-acik:#1C3229; --ana-ustu:#0B1A13;
+    --amber:#E6B15A; --amber-z:#382B12;
+    --kirmizi:#EC8E7E; --kirmizi-z:#3A1D18;
+    --mavi:#8DB8E4; --mavi-z:#192A3B;
+    --golge:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    --perde:rgba(0,0,0,.6);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --zemin:#101513; --yuzey:#19201D; --yuzey2:#232C28; --cizgi:#34403A;
+  --murekkep:#ECF1EC; --soluk:#A0ADA6;
+  --ana:#62BC98; --ana-koyu:#7BCBAA; --ana-acik:#1C3229; --ana-ustu:#0B1A13;
+  --amber:#E6B15A; --amber-z:#382B12;
+  --kirmizi:#EC8E7E; --kirmizi-z:#3A1D18;
+  --mavi:#8DB8E4; --mavi-z:#192A3B;
+  --golge:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  --perde:rgba(0,0,0,.6);
+  color-scheme:dark;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--zemin);color:var(--murekkep);font:16px/1.45 var(--f-govde);-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+img{max-width:100%;display:block}
+h1,h2,h3,p{margin:0}
+h1,h2,h3{font-family:var(--f-baslik);text-wrap:balance;letter-spacing:-.01em}
+h1{font-size:26px;line-height:1.15;font-weight:700}
+h2{font-size:19px;line-height:1.25;font-weight:600}
+h3{font-size:16px;font-weight:600}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--ana);outline-offset:2px}
+.ik{flex:none}
+.kucuk{font-size:14px;color:var(--soluk)}
+.etiket{font-size:13px;font-weight:600;color:var(--soluk);text-transform:uppercase;letter-spacing:.06em}
+.sayi{font-variant-numeric:tabular-nums}
+.sec{user-select:all}
+
+/* ---------- kabuk ---------- */
+.kabuk{min-height:100%;display:grid;grid-template-columns:minmax(0,1fr)}
+.yan{display:none}
+.icerik{width:100%;max-width:1040px;margin-inline:auto;padding-inline:16px;padding-block:18px 104px;min-width:0;display:flex;flex-direction:column;gap:18px}
+.icerik.form-modu{padding-block:18px 128px}
+.alt-nav{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--yuzey);border-top:1px solid var(--cizgi);display:grid;grid-template-columns:repeat(5,1fr);padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px))}
+.alt-nav a,.alt-nav button{background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;font-size:12px;font-weight:600;color:var(--soluk);border-radius:var(--r-k);cursor:pointer;min-width:0}
+.alt-nav .secili{color:var(--ana)}
+.alt-nav .yeni-dugme{color:var(--ana-ustu);background:var(--ana);margin:-2px 8px 0;border-radius:var(--r)}
+.marka{font-family:var(--f-baslik);font-weight:700;font-size:22px;letter-spacing:-.02em;display:flex;align-items:center;gap:8px;color:var(--ana)}
+.ust-cubuk{display:flex;align-items:center;justify-content:space-between;gap:12px}
+@media (min-width:900px){
+  .kabuk{grid-template-columns:236px minmax(0,1fr)}
+  .yan{display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100dvh;padding:22px 14px;background:var(--yuzey);border-right:1px solid var(--cizgi);overflow:auto}
+  .yan .marka{padding:0 10px 14px}
+  .yan a.oge{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:var(--r-k);font-weight:600;color:var(--soluk)}
+  .yan a.oge:hover{background:var(--yuzey2);color:var(--murekkep)}
+  .yan a.oge.secili{background:var(--ana-acik);color:var(--ana)}
+  .yan .magaza{margin-top:auto;padding:12px;border-top:1px solid var(--cizgi);font-size:14px;color:var(--soluk)}
+  .yan .magaza strong{display:block;color:var(--murekkep);font-size:15px}
+  .alt-nav{display:none}
+  .icerik{padding-inline:32px;padding-block:28px 48px}
+  .icerik.form-modu{padding-block:28px 120px}
+  .mobil-marka{display:none}
+}
+
+/* ---------- düğmeler ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 18px;border-radius:var(--r-k);border:1px solid transparent;background:var(--ana);color:var(--ana-ustu);font-weight:600;font-size:16px;cursor:pointer;text-align:center;line-height:1.2}
+.btn:hover{background:var(--ana-koyu)}
+.btn.ikincil{background:var(--yuzey);color:var(--murekkep);border-color:var(--cizgi)}
+.btn.ikincil:hover{background:var(--yuzey2)}
+.btn.yumusak{background:var(--ana-acik);color:var(--ana)}
+.btn.yumusak:hover{background:var(--ana-acik);filter:brightness(.97)}
+.btn.tehlike{background:var(--yuzey);color:var(--kirmizi);border-color:var(--cizgi)}
+.btn.tehlike:hover{background:var(--kirmizi-z)}
+.btn.buyuk{min-height:56px;font-size:17px;padding:0 22px}
+.btn.kucuk-b{min-height:40px;padding:0 12px;font-size:15px}
+.btn.tam{width:100%}
+.btn[disabled]{opacity:.55;cursor:default}
+.dugmeler{display:flex;flex-wrap:wrap;gap:10px}
+.dugmeler>.btn{flex:1 1 150px}
+.baglanti{background:none;border:0;padding:0;color:var(--ana);font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.geri{display:inline-flex;align-items:center;gap:4px;background:none;border:0;padding:8px 8px 8px 0;font-weight:600;color:var(--soluk);cursor:pointer}
+
+/* ---------- yüzeyler ---------- */
+.kart{background:var(--yuzey);border:1px solid var(--cizgi);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.kart.vurgu{border-color:var(--ana);background:var(--ana-acik)}
+.kart-bas{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.bolum{display:flex;flex-direction:column;gap:10px;min-width:0}
+.bolum-bas{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.iki{display:grid;gap:18px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:900px){.iki{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);align-items:start}}
+.bos{padding:26px 16px;text-align:center;color:var(--soluk);border:1px dashed var(--cizgi);border-radius:var(--r)}
+.serit{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:var(--r);background:var(--amber-z);color:var(--amber);font-size:15px;flex-wrap:wrap}
+.serit.kirmizi{background:var(--kirmizi-z);color:var(--kirmizi)}
+.serit.yesil{background:var(--ana-acik);color:var(--ana)}
+.serit>div{flex:1 1 220px;min-width:0}
+.serit .roller{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.serit .roller button{background:var(--yuzey);border:1px solid var(--cizgi);color:var(--murekkep);border-radius:99px;padding:5px 12px;font-size:14px;font-weight:600;cursor:pointer}
+.serit .roller button.secili{background:var(--amber);color:var(--yuzey);border-color:var(--amber)}
+
+/* ---------- liste ---------- */
+.liste{display:flex;flex-direction:column;background:var(--yuzey);border:1px solid var(--cizgi);border-radius:var(--r);overflow:hidden}
+.satir{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--cizgi);min-width:0;cursor:pointer;background:none;border-left:0;border-right:0;border-top:0;width:100%;text-align:left}
+.satir:last-child{border-bottom:0}
+.satir:hover{background:var(--yuzey2)}
+.satir-ana{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.satir-ust{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.satir-ust strong{font-size:17px;font-weight:600}
+.satir-alt{font-size:14px;color:var(--soluk);overflow-wrap:anywhere}
+.satir-sag{text-align:right;flex:none;display:flex;flex-direction:column;gap:2px;align-items:flex-end}
+.tutar{font-weight:700;font-size:17px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.rozet{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:99px;font-size:13px;font-weight:600;white-space:nowrap;background:var(--yuzey2);color:var(--soluk)}
+.rozet.amber{background:var(--amber-z);color:var(--amber)}
+.rozet.kirmizi{background:var(--kirmizi-z);color:var(--kirmizi)}
+.rozet.mavi{background:var(--mavi-z);color:var(--mavi)}
+.rozet.yesil{background:var(--ana-acik);color:var(--ana)}
+.kucuk-resim{width:56px;height:56px;border-radius:var(--r-k);object-fit:cover;background:var(--yuzey2);flex:none;display:grid;place-items:center;color:var(--soluk)}
+.sekmeler{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.sekmeler::-webkit-scrollbar{display:none}
+.sekme{flex:none;background:var(--yuzey);border:1px solid var(--cizgi);border-radius:99px;padding:9px 14px;font-weight:600;font-size:15px;color:var(--soluk);cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.sekme.secili{background:var(--murekkep);color:var(--zemin);border-color:var(--murekkep)}
+.sekme .adet{font-variant-numeric:tabular-nums;opacity:.75}
+
+/* ---------- form ---------- */
+.alan{display:flex;flex-direction:column;gap:6px;min-width:0}
+.alan>span{font-size:14px;font-weight:600;color:var(--soluk)}
+.alan small{font-size:13px;color:var(--soluk)}
+.giris,select.giris,textarea.giris{width:100%;min-height:50px;padding:12px 14px;border:1px solid var(--cizgi);border-radius:var(--r-k);background:var(--yuzey);font-size:16px;min-width:0}
+textarea.giris{min-height:96px;resize:vertical;line-height:1.4}
+.giris:focus{outline:none;border-color:var(--ana);box-shadow:0 0 0 3px var(--ana-acik)}
+.giris::placeholder{color:var(--soluk);opacity:.7}
+.alanlar{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:640px){.alanlar.cift{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.arama{position:relative}
+.arama .ik{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--soluk);pointer-events:none}
+.arama .giris{padding-left:44px}
+.ikili-sec{display:inline-grid;grid-auto-flow:column;grid-auto-columns:1fr;border:1px solid var(--cizgi);border-radius:var(--r-k);overflow:hidden;background:var(--yuzey)}
+.ikili-sec button{background:none;border:0;padding:0 16px;min-height:50px;font-weight:600;color:var(--soluk);cursor:pointer}
+.ikili-sec button.secili{background:var(--murekkep);color:var(--zemin)}
+.cipler{display:flex;flex-wrap:wrap;gap:8px}
+.cip{background:var(--yuzey);border:1px solid var(--cizgi);border-radius:99px;padding:9px 14px;font-weight:600;font-size:15px;cursor:pointer;color:var(--murekkep)}
+.cip.secili{background:var(--ana);color:var(--ana-ustu);border-color:var(--ana)}
+.adet-sec{display:inline-flex;align-items:center;border:1px solid var(--cizgi);border-radius:var(--r-k);overflow:hidden;background:var(--yuzey)}
+.adet-sec button{width:44px;height:44px;border:0;background:none;font-size:22px;cursor:pointer;color:var(--murekkep)}
+.adet-sec span{min-width:32px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums}
+.foto-al{display:grid;place-items:center;gap:6px;min-height:150px;border:2px dashed var(--cizgi);border-radius:var(--r);background:var(--yuzey2);color:var(--soluk);font-weight:600;cursor:pointer;text-align:center;padding:14px;overflow:hidden;position:relative}
+.foto-al img{max-height:220px;border-radius:var(--r-k)}
+.foto-al input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.onay{display:flex;gap:10px;align-items:center;font-weight:500;cursor:pointer}
+.onay input{width:22px;height:22px;accent-color:var(--ana)}
+
+/* ---------- teklif kalemleri ---------- */
+.kalem{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--cizgi);align-items:center;min-width:0}
+.kalem:last-child{border-bottom:0}
+.kalem .kucuk-resim{width:64px;height:64px}
+.kalem-ana{flex:1;min-width:0}
+.kalem-ana strong{display:block;font-weight:600;overflow-wrap:anywhere}
+.toplamlar{display:flex;flex-direction:column;gap:6px;font-variant-numeric:tabular-nums}
+.toplamlar>div{display:flex;justify-content:space-between;gap:12px}
+.toplamlar .genel{font-size:20px;font-weight:700;font-family:var(--f-baslik);padding-top:8px;border-top:1px solid var(--cizgi)}
+.alt-cubuk{position:fixed;left:0;right:0;bottom:0;z-index:25;background:var(--yuzey);border-top:1px solid var(--cizgi);padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));display:flex;gap:14px;align-items:center;justify-content:space-between}
+.alt-cubuk .btn{flex:0 1 260px}
+@media (min-width:900px){.alt-cubuk{left:236px;padding-inline:32px}}
+
+/* ---------- aşamalar ---------- */
+.asamalar{display:flex;flex-direction:column}
+.asama{display:flex;align-items:center;gap:12px;padding:9px 6px;background:none;border:0;text-align:left;cursor:pointer;border-radius:var(--r-k);color:var(--soluk);font-weight:500;width:100%;position:relative}
+button.asama:hover{background:var(--yuzey2)}
+div.asama{cursor:default}
+.asama .nokta{width:26px;height:26px;border-radius:50%;border:2px solid var(--cizgi);display:grid;place-items:center;flex:none;background:var(--yuzey);color:var(--ana-ustu)}
+.asama.gecti .nokta{background:var(--ana);border-color:var(--ana)}
+.asama.gecti{color:var(--murekkep)}
+.asama.simdi{color:var(--murekkep);font-weight:700}
+.asama.simdi .nokta{box-shadow:0 0 0 4px var(--ana-acik)}
+
+/* ---------- rakam kutuları ---------- */
+.rakamlar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (min-width:720px){.rakamlar{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.rakam{background:var(--yuzey);border:1px solid var(--cizgi);border-radius:var(--r);padding:14px;min-width:0}
+.rakam b{display:block;font-family:var(--f-baslik);font-size:24px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.15;overflow-wrap:anywhere}
+.rakam span{font-size:14px;color:var(--soluk)}
+.cubuk-satir{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:10px 0;border-bottom:1px solid var(--cizgi)}
+.cubuk-satir:last-child{border-bottom:0}
+.cubuk{grid-column:1/-1;height:8px;border-radius:99px;background:var(--yuzey2);overflow:hidden}
+.cubuk i{display:block;height:100%;background:var(--ana);border-radius:99px}
+.tablo-sar{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--cizgi);white-space:nowrap}
+th{font-size:13px;color:var(--soluk);text-transform:uppercase;letter-spacing:.05em}
+td.sag,th.sag{text-align:right;font-variant-numeric:tabular-nums}
+
+/* ---------- gün başlıkları ---------- */
+.gun-bas{display:flex;align-items:baseline;gap:10px;padding-top:6px}
+.gun-bas h2{font-size:18px}
+.bilgi-satir{display:flex;gap:10px;align-items:flex-start;font-size:15px;min-width:0}
+.bilgi-satir .ik{color:var(--soluk);margin-top:2px}
+.bilgi-satir>span{min-width:0;overflow-wrap:anywhere}
+.gecmis{display:flex;flex-direction:column;gap:10px}
+.gecmis div{font-size:15px;padding-left:14px;border-left:2px solid var(--cizgi)}
+.gecmis small{display:block;color:var(--soluk);font-size:13px}
+
+/* ---------- modal + toast ---------- */
+.perde{position:fixed;inset:0;z-index:50;background:var(--perde);display:flex;align-items:flex-end;justify-content:center}
+.modal{background:var(--yuzey);width:100%;max-width:560px;max-height:92dvh;overflow:auto;border-radius:18px 18px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:16px;box-shadow:var(--golge)}
+.modal-bas{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.kapat{background:var(--yuzey2);border:0;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;cursor:pointer;color:var(--murekkep);flex:none}
+@media (min-width:640px){.perde{align-items:center;padding:24px}.modal{border-radius:18px;padding:22px}}
+#toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;width:max-content;max-width:calc(100% - 32px)}
+#toast div{background:var(--murekkep);color:var(--zemin);padding:12px 18px;border-radius:99px;font-weight:600;font-size:15px;box-shadow:var(--golge);text-align:center}
+#toast div.hata{background:var(--kirmizi);color:var(--yuzey)}
+
+/* ---------- giriş ---------- */
+.giris-sayfa{min-height:100%;display:grid;place-items:center;padding-inline:16px;padding-block:32px}
+.giris-kutu{width:100%;max-width:440px;display:flex;flex-direction:column;gap:20px}
+.giris-kutu .marka{font-size:30px}
+.yukleniyor{min-height:60dvh;display:grid;place-items:center;color:var(--soluk);font-weight:600}
+
+/* ---------- müşteri teklif sayfası ---------- */
+.m-sayfa{max-width:760px;margin-inline:auto;padding-inline:16px;padding-block:20px 48px;display:flex;flex-direction:column;gap:20px}
+.m-onizleme{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--murekkep);color:var(--zemin);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:600;font-size:15px}
+.m-onizleme a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+.m-bas{display:flex;align-items:center;gap:14px}
+.m-logo{width:60px;height:60px;border-radius:var(--r);object-fit:contain;background:var(--yuzey);border:1px solid var(--cizgi);flex:none}
+.m-logo.harf{display:grid;place-items:center;background:var(--ana);color:var(--ana-ustu);font-family:var(--f-baslik);font-weight:700;font-size:26px;border:0}
+.m-urunler{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:640px){.m-urunler{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.m-urun{background:var(--yuzey);border:1px solid var(--cizgi);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column}
+.m-urun .gorsel{aspect-ratio:4/3;background:var(--yuzey2);display:grid;place-items:center;color:var(--soluk);max-width:100%}
+.m-urun .gorsel img{width:100%;height:100%;object-fit:cover}
+.m-urun .govde{padding:14px;display:flex;flex-direction:column;gap:4px}
+.m-urun .fiyat{display:flex;justify-content:space-between;gap:10px;margin-top:6px;font-variant-numeric:tabular-nums;align-items:baseline}
+.m-metin{white-space:pre-wrap;font-size:15px;color:var(--soluk);max-width:65ch}
+details.m-acilir summary{cursor:pointer;font-weight:600;color:var(--soluk);font-size:14px}
+.m-alt{text-align:center;font-size:13px;color:var(--soluk)}
+
+@media (prefers-reduced-motion:no-preference){
+  .modal{animation:yuksel .18s ease-out}
+  @keyframes yuksel{from{transform:translateY(16px);opacity:.6}to{transform:none;opacity:1}}
+}
+
+</style>
+</head>
+<body>
+<div id="app"><div class="yukleniyor">Yükleniyor…</div></div>
+<div id="modal-katman"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script src="firebase-config.js"></script>
+<script>
+(function () {
+'use strict';
+/* ============================================================
+   Veri katmanı: canlı (Firebase) ve deneme (tarayıcı belleği)
+   ============================================================ */
+const AYAR = Object.assign({ uygulamaAdi: 'Sedir', denemeGun: 14, destekWhatsapp: '', firebase: {} }, window.SEDIR_AYAR || {});
+const CANLI = !!(AYAR.firebase && AYAR.firebase.apiKey && AYAR.firebase.projectId);
+const SDK = 'https://www.gstatic.com/firebasejs/10.12.5/';
+const GUN = 864e5;
+
+const VARS_SARTLAR = 'Fiyatlara KDV dahildir.\nSipariş onayında kapora alınır, kalan tutar teslimatta tahsil edilir.\nTeslimat ve montaj ücretsizdir.';
+const VARS_KVKK = 'Adınız ve telefon numaranız yalnızca teklif hazırlamak, siparişinizi takip etmek ve sizinle iletişim kurmak amacıyla mağazamız tarafından işlenir. Bilgileriniz üçüncü kişilerle paylaşılmaz. Bilgilerinizin silinmesini mağazamızdan talep edebilirsiniz.';
+
+const kopya = v => JSON.parse(JSON.stringify(v === undefined ? null : v));
+const rastgele = (n = 20) => { const h = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789'; let s = ''; for (let i = 0; i < n; i++) s += h[Math.floor(Math.random() * h.length)]; return s; };
+const gunStr = (d = new Date()) => { const x = new Date(d); return x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0') + '-' + String(x.getDate()).padStart(2, '0'); };
+const gunEkle = (n, bas) => { const x = bas ? new Date(bas + 'T12:00:00') : new Date(); x.setDate(x.getDate() + n); return gunStr(x); };
+
+function yolYaz(nesne, yol, deger) {
+  const p = yol.split('.'); let o = nesne;
+  for (let i = 0; i < p.length - 1; i++) { if (o[p[i]] == null || typeof o[p[i]] !== 'object') o[p[i]] = {}; o = o[p[i]]; }
+  o[p[p.length - 1]] = deger;
+}
+function yolOku(nesne, yol) { return yol.split('.').reduce((o, k) => (o == null ? undefined : o[k]), nesne); }
+/* {set:{'a.b':1}, push:{'log':x}} değişikliğini bir kopyaya uygular */
+function degisiklikUygula(q, deg) {
+  const y = kopya(q);
+  for (const k in (deg.set || {})) yolYaz(y, k, kopya(deg.set[k]));
+  for (const k in (deg.push || {})) { const d = yolOku(y, k); const dizi = Array.isArray(d) ? d : []; dizi.push(kopya(deg.push[k])); yolYaz(y, k, dizi); }
+  return y;
+}
+
+/* ---------------- deneme modu için örnek görseller ---------------- */
+function ornekGorsel(tip, zemin, renk) {
+  const s = {
+    koltuk: `<rect x="48" y="58" width="144" height="56" rx="12"/><rect x="24" y="80" width="34" height="58" rx="12"/><rect x="182" y="80" width="34" height="58" rx="12"/><rect x="40" y="100" width="160" height="38" rx="8" opacity=".8"/><rect x="50" y="138" width="8" height="12"/><rect x="182" y="138" width="8" height="12"/>`,
+    kose: `<rect x="30" y="56" width="180" height="52" rx="12"/><rect x="22" y="94" width="196" height="40" rx="8" opacity=".8"/><rect x="146" y="118" width="72" height="30" rx="8"/><rect x="34" y="134" width="8" height="14"/><rect x="198" y="148" width="8" height="8"/>`,
+    yatak: `<rect x="44" y="42" width="152" height="62" rx="10"/><rect x="34" y="96" width="172" height="40" rx="8" opacity=".8"/><rect x="58" y="78" width="52" height="24" rx="10" fill="#fff" opacity=".85"/><rect x="130" y="78" width="52" height="24" rx="10" fill="#fff" opacity=".85"/><rect x="42" y="136" width="8" height="14"/><rect x="190" y="136" width="8" height="14"/>`,
+    masa: `<rect x="34" y="70" width="172" height="12" rx="4"/><rect x="50" y="82" width="9" height="64"/><rect x="181" y="82" width="9" height="64"/><rect x="92" y="46" width="24" height="40" rx="6" opacity=".7"/><rect x="124" y="46" width="24" height="40" rx="6" opacity=".7"/>`,
+    tv: `<rect x="30" y="108" width="180" height="34" rx="5"/><rect x="66" y="42" width="108" height="60" rx="5" opacity=".8"/><rect x="44" y="142" width="8" height="10"/><rect x="188" y="142" width="8" height="10"/><rect x="118" y="116" width="2" height="18" fill="#fff" opacity=".6"/>`,
+    dolap: `<rect x="62" y="26" width="116" height="126" rx="6"/><rect x="119" y="32" width="2" height="114" fill="#fff" opacity=".6"/><rect x="108" y="84" width="4" height="18" rx="2" fill="#fff" opacity=".8"/><rect x="128" y="84" width="4" height="18" rx="2" fill="#fff" opacity=".8"/>`,
+    berjer: `<rect x="82" y="46" width="76" height="64" rx="14"/><rect x="66" y="84" width="24" height="52" rx="10"/><rect x="150" y="84" width="24" height="52" rx="10"/><rect x="80" y="100" width="80" height="36" rx="8" opacity=".8"/><rect x="86" y="136" width="7" height="14"/><rect x="147" y="136" width="7" height="14"/>`
+  }[tip] || '';
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 180"><rect width="240" height="180" fill="${zemin}"/><rect y="150" width="240" height="30" fill="${renk}" opacity=".16"/><g fill="${renk}">${s}</g></svg>`;
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+}
+
+function ornekVeri() {
+  const simdi = Date.now();
+  const users = [
+    { uid: 'u1', name: 'Selim Kaya', email: 'selim@ornekmobilya.com', role: 'sahip', active: true, storeId: 'ornek', createdAt: simdi - 200 * GUN },
+    { uid: 'u2', name: 'Elif Demir', email: 'elif@ornekmobilya.com', role: 'danisman', active: true, storeId: 'ornek', createdAt: simdi - 150 * GUN },
+    { uid: 'u3', name: 'Murat Aydın', email: 'murat@ornekmobilya.com', role: 'danisman', active: true, storeId: 'ornek', createdAt: simdi - 90 * GUN },
+    { uid: 'u4', name: 'Hasan Usta', email: 'hasan@ornekmobilya.com', role: 'teslimat', active: true, storeId: 'ornek', createdAt: simdi - 90 * GUN }
+  ];
+  const store = {
+    id: 'ornek', name: 'Örnek Mobilya', phone: '0224 555 00 00', whatsapp: '0532 000 00 00', address: 'Mobilyacılar Cad. No: 12, İnegöl / Bursa', logo: '',
+    ownerUid: 'u1', ownerName: 'Selim Kaya', ownerEmail: 'selim@ornekmobilya.com', plan: 'deneme', paidUntil: simdi + 9 * GUN, createdAt: simdi - 5 * GUN,
+    validDays: 7, followDays: 3, terms: VARS_SARTLAR, kvkk: VARS_KVKK, msgQuote: ''
+  };
+  const photos = {}, products = [];
+  const urun = (id, name, price, tip, zemin, renk) => {
+    const g = ornekGorsel(tip, zemin, renk); photos['f-' + id] = g;
+    products.push({ id, name, price, photoId: 'f-' + id, thumb: g, createdAt: simdi - 60 * GUN });
+    return { name, price, photoId: 'f-' + id, productId: id };
+  };
+  const U = {
+    lizbon: urun('p1', 'Lizbon Köşe Takımı', 64500, 'kose', '#DDE6DF', '#567565'),
+    sehpa: urun('p2', 'Orta Sehpa Ceviz', 6900, 'masa', '#EAE3D5', '#8E7248'),
+    vera: urun('p3', 'Vera Yatak Odası Takımı', 94000, 'yatak', '#DEE5ED', '#5A7392'),
+    roma: urun('p4', 'Roma Yemek Masası + 6 Sandalye', 57900, 'masa', '#E4E5E1', '#666C68'),
+    tv: urun('p5', 'Nova TV Ünitesi 220 cm', 18900, 'tv', '#EAE3D5', '#8E7248'),
+    berjer: urun('p6', 'Bergen Berjer', 12500, 'berjer', '#EEDFD9', '#A26A58'),
+    genc: urun('p7', 'Pera Genç Odası', 46500, 'dolap', '#DEE5ED', '#5A7392'),
+    baza: urun('p8', 'Bazalı Yatak Seti 160x200', 28900, 'yatak', '#E4E5E1', '#666C68'),
+    milano: urun('p9', 'Milano Koltuk Takımı 3+3+1', 83000, 'koltuk', '#DDE6DF', '#567565'),
+    calisma: urun('p10', 'Çalışma Masası + Kitaplık', 18700, 'dolap', '#EAE3D5', '#8E7248')
+  };
+  const quotes = [], pub = {};
+  let no = 30;
+  const ekle = (o) => {
+    no++;
+    const items = o.items.map(i => Object.assign({ variant: '', qty: 1 }, i));
+    const ara = items.reduce((t, i) => t + i.price * i.qty, 0);
+    const ind = o.ind || 0;
+    const olusturan = users.find(u => u.uid === o.kim);
+    const q = {
+      id: 'q' + no, no, customer: { name: o.ad, phone: o.tel }, items, discountType: 'tl', discountVal: ind,
+      subtotal: ara, discount: ind, total: ara - ind, note: o.not || '', internalNote: o.ic || '',
+      validUntil: gunEkle(o.gecerli == null ? 7 - o.gun : o.gecerli), followUpAt: o.takip == null ? '' : gunEkle(o.takip),
+      status: o.durum || 'acik', lostReason: o.neden || '', createdBy: o.kim, createdByName: olusturan.name,
+      createdAt: simdi - o.gun * GUN - 3 * 36e5, updatedAt: simdi - o.gun * GUN, sentAt: simdi - o.gun * GUN - 2 * 36e5, wonAt: o.kazanim == null ? 0 : simdi - o.kazanim * GUN,
+      log: [{ at: simdi - o.gun * GUN - 2 * 36e5, by: olusturan.name, text: 'Teklif WhatsApp\'tan gönderildi' }].concat(o.log || []),
+      order: o.siparis || null
+    };
+    quotes.push(q);
+    if (o.bakis) pub[q.id] = { views: o.bakis[0], lastView: simdi - o.bakis[1] * 36e5 };
+  };
+  const odeme = (gun, tutar, sekil, kim) => ({ at: simdi - gun * GUN, amount: tutar, method: sekil, by: kim });
+  ekle({ ad: 'Ayşe Yılmaz', tel: '0532 111 22 33', kim: 'u2', gun: 3, takip: 0, bakis: [3, 2], ind: 2900,
+    items: [Object.assign({}, U.lizbon, { variant: 'Gri keten kumaş, sol köşe' }), U.sehpa], ic: 'Eşiyle tekrar gelecek. Kumaş rengini beğendi.' });
+  ekle({ ad: 'Mehmet Arslan', tel: '0533 222 33 44', kim: 'u3', gun: 5, takip: -1, bakis: [1, 70],
+    items: [Object.assign({}, U.vera, { variant: 'Antrasit, 6 kapaklı dolap' })] });
+  ekle({ ad: 'Zeynep Koç', tel: '0544 333 44 55', kim: 'u2', gun: 0, takip: 3,
+    items: [Object.assign({}, U.roma, { variant: 'Ceviz, açılır masa' })] });
+  ekle({ ad: 'Seda Polat', tel: '0505 444 55 66', kim: 'u3', gun: 12, gecerli: -5, bakis: [2, 200],
+    items: [U.roma], ind: 3000 });
+  ekle({ ad: 'Burak Şahin', tel: '0532 555 66 77', kim: 'u2', gun: 8, durum: 'kazanildi', kazanim: 6,
+    items: [U.tv, Object.assign({}, U.berjer, { variant: 'Hardal kadife' })],
+    siparis: { stage: 'uretim', deliveryDate: gunEkle(9), slot: '', address: 'Çamlıca Mah. Gül Sok. No: 4 D: 7, Nilüfer', team: '', note: '', payments: [odeme(6, 10000, 'Nakit', 'Elif Demir')] } });
+  ekle({ ad: 'Fatma Öztürk', tel: '0535 666 77 88', kim: 'u3', gun: 21, durum: 'kazanildi', kazanim: 19,
+    items: [Object.assign({}, U.lizbon, { variant: 'Bej bukle, sağ köşe', price: 72000 })],
+    siparis: { stage: 'yolda', deliveryDate: gunEkle(0), slot: '14:00 – 16:00', address: 'Hürriyet Mah. Lale Cad. No: 21 D: 3, Osmangazi', team: 'Hasan Usta', note: 'Asansör yok, 3. kat.', payments: [odeme(19, 30000, 'Kart', 'Murat Aydın')] } });
+  ekle({ ad: 'Emre Çelik', tel: '0542 777 88 99', kim: 'u2', gun: 16, durum: 'kazanildi', kazanim: 14,
+    items: [Object.assign({}, U.genc, { variant: 'Beyaz – meşe' })],
+    siparis: { stage: 'depo', deliveryDate: gunEkle(3), slot: '', address: 'Yeni Mah. Çınar Sok. No: 9, İnegöl', team: 'Hasan Usta', note: '', payments: [odeme(14, 20000, 'Havale', 'Elif Demir')] } });
+  ekle({ ad: 'Hülya Aksoy', tel: '0536 888 99 00', kim: 'u3', gun: 26, durum: 'kazanildi', kazanim: 24,
+    items: [U.baza],
+    siparis: { stage: 'teslim', deliveryDate: gunEkle(-6), slot: '', address: 'Kültür Mah. Menekşe Sok. No: 2, Yıldırım', team: 'Hasan Usta', note: '', deliveredAt: simdi - 6 * GUN, payments: [odeme(24, 8900, 'Nakit', 'Murat Aydın'), odeme(6, 20000, 'Nakit', 'Hasan Usta')] } });
+  ekle({ ad: 'Onur Kılıç', tel: '0507 999 00 11', kim: 'u2', gun: 2, durum: 'kazanildi', kazanim: 1,
+    items: [U.calisma],
+    siparis: { stage: 'siparis', deliveryDate: '', slot: '', address: '', team: '', note: '', payments: [odeme(1, 5000, 'Kart', 'Elif Demir')] } });
+  ekle({ ad: 'Cem Doğan', tel: '0531 000 11 22', kim: 'u3', gun: 10, durum: 'kaybedildi', neden: 'Fiyat yüksek geldi', items: [U.milano] });
+  ekle({ ad: 'Gül Erdem', tel: '0534 123 45 67', kim: 'u2', gun: 14, durum: 'kaybedildi', neden: 'Başka mağazadan aldı',
+    items: [Object.assign({}, U.lizbon, { price: 61000 })] });
+  return { surum: 1, tohum: gunStr(), degisti: false, aktif: 'u1', store, users, quotes, products, photos, pub, sayac: no };
+}
+
+/* ---------------- deneme arka ucu ---------------- */
+function yerelArka() {
+  const ANAHTAR = 'sedir-deneme-v1';
+  let d = null, authCb = null;
+  const din = {};
+  try { const x = JSON.parse(localStorage.getItem(ANAHTAR) || 'null'); if (x && x.surum === 1 && (x.degisti || x.tohum === gunStr())) d = x; } catch (e) { /* bellek kapalı olabilir */ }
+  if (!d) d = ornekVeri();
+  const ben = () => d.users.find(u => u.uid === d.aktif);
+  const oturum = () => { const u = ben(); return u ? { uid: u.uid, email: u.email, user: kopya(u), storeId: 'ornek', admin: false } : null; };
+  const veri = {
+    store: () => d.store,
+    users: () => d.users,
+    products: () => d.products,
+    quotes: () => { const u = ben(); if (!u) return []; if (u.role === 'danisman') return d.quotes.filter(q => q.createdBy === u.uid); if (u.role === 'teslimat') return d.quotes.filter(q => q.status === 'kazanildi'); return d.quotes; },
+    views: () => { const m = {}; for (const k in d.pub) m[k] = { views: d.pub[k].views || 0, last: d.pub[k].lastView || 0 }; return m; }
+  };
+  const yay = tur => (din[tur] || []).forEach(f => f(kopya(veri[tur]())));
+  const yaz = (...turler) => { d.degisti = true; try { localStorage.setItem(ANAHTAR, JSON.stringify(d)); } catch (e) { /* yoksay */ } turler.forEach(yay); };
+  const tamPub = id => {
+    const q = d.quotes.find(x => x.id === id); if (!q) return null;
+    return q._pub ? kopya(q._pub) : null;
+  };
+  return {
+    mod: 'deneme',
+    onAuth(cb) { authCb = cb; setTimeout(() => cb(oturum()), 0); },
+    async signIn() { d.aktif = 'u1'; yaz(); authCb(oturum()); },
+    async signUp() { throw new Error('Deneme modunda kayıt yapılamaz'); },
+    async completeSignUp() {},
+    async signOut() { d.aktif = null; authCb(null); },
+    async resetPass() {},
+    demoRol(uid) { d.aktif = uid; try { localStorage.setItem(ANAHTAR, JSON.stringify(d)); } catch (e) { /* yoksay */ } authCb(oturum()); },
+    demoSifirla() { try { localStorage.removeItem(ANAHTAR); } catch (e) { /* yoksay */ } d = ornekVeri(); authCb(oturum()); },
+    watch(tur, cb) { (din[tur] = din[tur] || []).push(cb); setTimeout(() => cb(kopya(veri[tur]())), 0); return () => { din[tur] = (din[tur] || []).filter(f => f !== cb); }; },
+    newId: () => rastgele(20),
+    async nextNo() { d.sayac = (d.sayac || 0) + 1; return d.sayac; },
+    async setQuote(id, q, pub) { const y = Object.assign(kopya(q), { id, _pub: kopya(pub) }); const i = d.quotes.findIndex(x => x.id === id); if (i >= 0) d.quotes[i] = y; else d.quotes.push(y); yaz('quotes'); },
+    async updateQuote(id, deg, pub) { const i = d.quotes.findIndex(x => x.id === id); if (i < 0) return; const y = degisiklikUygula(d.quotes[i], deg); if (pub) y._pub = kopya(pub); d.quotes[i] = y; yaz('quotes'); },
+    async deleteQuote(id) { d.quotes = d.quotes.filter(x => x.id !== id); delete d.pub[id]; yaz('quotes', 'views'); },
+    async setProduct(id, p) { const y = Object.assign(kopya(p), { id }); const i = d.products.findIndex(x => x.id === id); if (i >= 0) d.products[i] = y; else d.products.push(y); yaz('products'); },
+    async deleteProduct(id) { d.products = d.products.filter(x => x.id !== id); yaz('products'); },
+    async putPhoto(data) { const id = 'f-' + rastgele(12); d.photos[id] = data; yaz(); return id; },
+    async getPhoto(id) { return d.photos[id] || ''; },
+    async updateStore(yama) { Object.assign(d.store, kopya(yama)); yaz('store'); },
+    async addStaff({ name, email, role }) { d.users.push({ uid: 'u-' + rastgele(8), name, email, role, active: true, storeId: 'ornek', createdAt: Date.now() }); yaz('users'); },
+    async updateUser(uid, yama) { const u = d.users.find(x => x.uid === uid); if (u) Object.assign(u, yama); yaz('users'); },
+    async getPublic(id) { return tamPub(id); },
+    async adminStores() { return []; },
+    async adminUpdateStore() {}
+  };
+}
+
+/* ---------------- canlı arka uç (Firebase) ---------------- */
+function betik(src) { return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = () => rej(new Error('yuklenemedi')); document.head.appendChild(s); }); }
+
+function canliArka() {
+  let fb, auth, db, FV, authCb = null, ot = null, kayitta = false, ilkCoz;
+  const ilk = new Promise(r => { ilkCoz = r; });
+  const hazir = (async () => {
+    if (!window.firebase || !window.firebase.firestore) for (const f of ['firebase-app-compat.js', 'firebase-auth-compat.js', 'firebase-firestore-compat.js']) await betik(SDK + f);
+    fb = window.firebase; fb.initializeApp(AYAR.firebase); auth = fb.auth(); db = fb.firestore(); FV = fb.firestore.FieldValue;
+    auth.onAuthStateChanged(u => { ilkCoz(); if (!kayitta) yukle(u); });
+  })();
+  const temiz = v => JSON.parse(JSON.stringify(v));
+  const M = () => db.collection('stores').doc(ot.storeId);
+
+  async function yukle(u) {
+    if (!u) { ot = null; if (authCb) authCb(null); return; }
+    try {
+      const [k, a] = await Promise.all([
+        db.collection('users').doc(u.uid).get(),
+        db.collection('admins').doc(u.uid).get().then(s => s.exists).catch(() => false)
+      ]);
+      if (k.exists) ot = { uid: u.uid, email: u.email, user: Object.assign({ uid: u.uid }, k.data()), storeId: k.data().storeId, admin: a };
+      else ot = { uid: u.uid, email: u.email, user: null, storeId: null, admin: a, eksik: !a };
+    } catch (e) { ot = { uid: u.uid, email: u.email, user: null, storeId: null, admin: false, hata: e.code || String(e) }; }
+    if (authCb) authCb(ot);
+  }
+  async function magazaYaz(uid, email, { storeName, name, phone }) {
+    const ref = db.collection('stores').doc(); const simdi = Date.now(); const b = db.batch();
+    b.set(ref, { name: storeName, phone: phone || '', address: '', logo: '', ownerUid: uid, ownerName: name, ownerEmail: email, plan: 'deneme', paidUntil: simdi + AYAR.denemeGun * GUN, createdAt: simdi, validDays: 7, followDays: 3, terms: VARS_SARTLAR, kvkk: VARS_KVKK, msgQuote: '' });
+    b.set(db.collection('users').doc(uid), { storeId: ref.id, name, email, role: 'sahip', active: true, createdAt: simdi });
+    await b.commit();
+  }
+
+  return {
+    mod: 'canli',
+    onAuth(cb) { authCb = cb; hazir.catch(e => cb({ hata: 'baglanti', ayrinti: String(e && e.message || e) })); },
+    async signIn(email, pass) { await hazir; await auth.signInWithEmailAndPassword(email, pass); },
+    async signUp(v) {
+      await hazir; kayitta = true;
+      try { const c = await auth.createUserWithEmailAndPassword(v.email, v.pass); await magazaYaz(c.user.uid, v.email, v); }
+      finally { kayitta = false; if (auth.currentUser) await yukle(auth.currentUser); }
+    },
+    async completeSignUp(v) { await magazaYaz(ot.uid, ot.email, v); await yukle(auth.currentUser); },
+    async signOut() { await auth.signOut(); },
+    async resetPass(email) { await hazir; await auth.sendPasswordResetEmail(email); },
+    watch(tur, cb) {
+      const sid = ot.storeId, rol = ot.user.role;
+      const hata = e => console.warn('Sedir izleme hatası:', tur, e && e.code || e);
+      const liste = (s, anahtar) => s.docs.map(x => Object.assign({ [anahtar]: x.id }, x.data()));
+      if (tur === 'store') return M().onSnapshot(s => cb(s.exists ? Object.assign({ id: s.id }, s.data()) : null), hata);
+      if (tur === 'users') return db.collection('users').where('storeId', '==', sid).onSnapshot(s => cb(liste(s, 'uid')), hata);
+      if (tur === 'products') return M().collection('products').onSnapshot(s => cb(liste(s, 'id')), hata);
+      if (tur === 'quotes') {
+        let r = M().collection('quotes');
+        if (rol === 'danisman') r = r.where('createdBy', '==', ot.uid);
+        else if (rol === 'teslimat') r = r.where('status', '==', 'kazanildi');
+        return r.onSnapshot(s => cb(liste(s, 'id')), hata);
+      }
+      if (tur === 'views') return db.collection('views').where('storeId', '==', sid).onSnapshot(s => { const m = {}; s.docs.forEach(x => { const v = x.data(); m[x.id] = { views: v.n || 0, last: v.last || 0 }; }); cb(m); }, hata);
+      return () => {};
+    },
+    newId: () => db.collection('_').doc().id,
+    async nextNo() {
+      const r = M().collection('meta').doc('sayac');
+      return db.runTransaction(async t => { const s = await t.get(r); const n = ((s.exists && s.data().n) || 0) + 1; t.set(r, { n }); return n; });
+    },
+    async setQuote(id, q, pub) {
+      const b = db.batch();
+      b.set(M().collection('quotes').doc(id), temiz(q));
+      b.set(db.collection('public').doc(id), temiz(pub));
+      await b.commit();
+    },
+    async updateQuote(id, deg, pub) {
+      const u = temiz(deg.set || {});
+      for (const k in (deg.push || {})) u[k] = FV.arrayUnion(temiz(deg.push[k]));
+      const b = db.batch();
+      b.update(M().collection('quotes').doc(id), u);
+      if (pub) b.set(db.collection('public').doc(id), temiz(pub));
+      await b.commit();
+    },
+    async deleteQuote(id) {
+      const b = db.batch();
+      b.delete(M().collection('quotes').doc(id));
+      b.delete(db.collection('public').doc(id));
+      await b.commit();
+      db.collection('views').doc(id).delete().catch(() => {});
+    },
+    async setProduct(id, p) { await M().collection('products').doc(id).set(temiz(p)); },
+    async deleteProduct(id) { await M().collection('products').doc(id).delete(); },
+    async putPhoto(data) { const r = db.collection('photos').doc(); await r.set({ storeId: ot.storeId, data, at: Date.now() }); return r.id; },
+    async getPhoto(id) { await hazir; const s = await db.collection('photos').doc(id).get(); return s.exists ? s.data().data : ''; },
+    async updateStore(yama) { await M().update(temiz(yama)); },
+    async addStaff({ name, email, pass, role }) {
+      const ikincil = fb.initializeApp(AYAR.firebase, 'ikincil-' + Date.now());
+      try {
+        const c = await ikincil.auth().createUserWithEmailAndPassword(email, pass);
+        await db.collection('users').doc(c.user.uid).set({ storeId: ot.storeId, name, email, role, active: true, createdAt: Date.now() });
+        await ikincil.auth().signOut();
+      } finally { ikincil.delete().catch(() => {}); }
+    },
+    async updateUser(uid, yama) { await db.collection('users').doc(uid).update(temiz(yama)); },
+    async getPublic(id) {
+      await hazir; await ilk;
+      const s = await db.collection('public').doc(id).get();
+      if (!s.exists) return null;
+      const v = s.data();
+      if (!auth.currentUser) db.collection('views').doc(id).set({ storeId: v.storeId, n: FV.increment(1), last: Date.now() }, { merge: true }).catch(() => {});
+      return v;
+    },
+    async adminStores() { const s = await db.collection('stores').get(); return s.docs.map(x => Object.assign({ id: x.id }, x.data())); },
+    async adminUpdateStore(id, yama) { await db.collection('stores').doc(id).update(temiz(yama)); }
+  };
+}
+
+const B = CANLI ? canliArka() : yerelArka();
+
+/* ============================================================
+   Uygulama: yardımcılar, durum, hesaplar
+   ============================================================ */
+const $ = (s, k = document) => k.querySelector(s);
+const $$ = (s, k = document) => Array.from(k.querySelectorAll(s));
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const para = n => new Intl.NumberFormat('tr-TR', { maximumFractionDigits: 0 }).format(Math.round(+n || 0)) + ' ₺';
+const sayi = v => { if (typeof v === 'number') return v; const s = String(v || '').replace(/[^\d,-]/g, '').replace(',', '.'); const n = parseFloat(s); return isFinite(n) ? n : 0; };
+const tarih = (s, uzun) => { if (!s) return ''; const d = typeof s === 'number' ? new Date(s) : new Date(s + 'T12:00:00'); return d.toLocaleDateString('tr-TR', uzun ? { weekday: 'long', day: 'numeric', month: 'long' } : { day: 'numeric', month: 'long' }); };
+const yakin = s => { if (!s) return ''; if (s === gunStr()) return 'Bugün'; if (s === gunEkle(1)) return 'Yarın'; if (s === gunEkle(-1)) return 'Dün'; return tarih(s); };
+const once = ms => { const f = Date.now() - ms; if (f < 6e4) return 'az önce'; if (f < 36e5) return Math.floor(f / 6e4) + ' dk önce'; if (f < GUN) return Math.floor(f / 36e5) + ' saat önce'; if (f < 2 * GUN) return 'dün'; return Math.floor(f / GUN) + ' gün önce'; };
+const saatli = ms => new Date(ms).toLocaleString('tr-TR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+const telNo = t => { let s = String(t || '').replace(/\D/g, ''); if (!s) return ''; if (s.startsWith('00')) s = s.slice(2); if (s.startsWith('0')) s = '90' + s.slice(1); else if (s.length === 10) s = '90' + s; return s; };
+const waLink = (tel, metin) => 'https://wa.me/' + telNo(tel) + '?text=' + encodeURIComponent(metin);
+const haritaLink = adres => 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(adres);
+const teklifNo = n => 'T-' + String(n || 0).padStart(4, '0');
+
+const IK = {
+  ev: '<path d="M4 11l8-7 8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/>',
+  belge: '<path d="M7 3h7l5 5v12a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>',
+  arti: '<path d="M12 5v14M5 12h14"/>',
+  kutu: '<path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/>',
+  kamyon: '<path d="M2 6h11v10H2zM13 9h4l4 4v3h-8z"/><circle cx="6.5" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/>',
+  grafik: '<path d="M4 20V4M4 20h16M8 16v-5M12 16V8M16 16v-7"/>',
+  ayar: '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>',
+  ara: '<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.3-4.3"/>',
+  tel: '<path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z"/>',
+  wa: '<path d="M4 20l1.3-4A8 8 0 1 1 8.5 19z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5"/>',
+  kamera: '<path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/>',
+  tik: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  carpi: '<path d="M6 6l12 12M18 6L6 18"/>',
+  geri: '<path d="M15 5l-7 7 7 7"/>',
+  ileri: '<path d="M9 5l7 7-7 7"/>',
+  kopya: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>',
+  goz: '<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  cop: '<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
+  kalem: '<path d="M4 20l1-4L16 5l3 3L8 19z"/>',
+  takvim: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  kisi: '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+  koltuk: '<path d="M5 11V8a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v3"/><path d="M3 12a2 2 0 0 1 4 0v3h10v-3a2 2 0 0 1 4 0v6H3zM6 18v2M18 18v2"/>',
+  menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
+  cikis: '<path d="M10 4H5v16h5M14 8l4 4-4 4M18 12H9"/>',
+  konum: '<path d="M12 21s7-6.5 7-12a7 7 0 0 0-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/>',
+  indir: '<path d="M12 4v11M7 11l5 5 5-5M5 20h14"/>',
+  saat: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'
+};
+const ik = (ad, b = 22) => `<svg class="ik" width="${b}" height="${b}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK[ad] || ''}</svg>`;
+
+const ASAMALAR = [['siparis', 'Sipariş alındı'], ['uretim', 'Üretimde'], ['depo', 'Depoda, hazır'], ['yolda', 'Teslimat planlandı'], ['teslim', 'Teslim edildi']];
+const asamaAd = k => (ASAMALAR.find(a => a[0] === k) || ASAMALAR[0])[1];
+const asamaSira = k => Math.max(0, ASAMALAR.findIndex(a => a[0] === k));
+const ROL = { sahip: 'Mağaza sahibi', danisman: 'Satış danışmanı', teslimat: 'Teslimat ekibi' };
+const PLAN = {
+  deneme: { ad: 'Ücretsiz deneme', kisi: 6 },
+  baslangic: { ad: 'Başlangıç', kisi: 2 },
+  magaza: { ad: 'Mağaza', kisi: 6 },
+  zincir: { ad: 'Zincir', kisi: 50 }
+};
+const KAYIP_NEDEN = ['Fiyat yüksek geldi', 'Başka mağazadan aldı', 'Vazgeçti', 'Ulaşılamadı'];
+const ODEME_SEKIL = ['Nakit', 'Kart', 'Havale'];
+const VARS_MESAJ = 'Merhaba {ad}, {magaza} olarak hazırladığımız teklifiniz burada:\n{link}\n\nToplam: {toplam}\nTeklifimiz {gecerlilik} tarihine kadar geçerlidir. Sorularınız için bu numaradan yazabilirsiniz.';
+const ASAMA_MESAJ = {
+  siparis: 'Merhaba {ad}, siparişiniz alındı. {magaza} olarak teşekkür ederiz. Siparişinizin durumunu buradan takip edebilirsiniz:\n{link}',
+  uretim: 'Merhaba {ad}, siparişiniz üretime alındı. Durumu buradan takip edebilirsiniz:\n{link}',
+  depo: 'Merhaba {ad}, ürünleriniz hazır ve depomuzda. Teslimat günü için sizinle iletişime geçeceğiz.\n{link}',
+  yolda: 'Merhaba {ad}, teslimatınız {teslimat} için planlandı. Değişiklik olursa bu numaradan yazabilirsiniz.\n{link}',
+  teslim: 'Merhaba {ad}, ürünleriniz teslim edildi. Güle güle kullanın. {magaza} olarak bizi tercih ettiğiniz için teşekkür ederiz.'
+};
+const TAKIP_MESAJ = 'Merhaba {ad}, {magaza} adına yazıyorum. Hazırladığımız teklifle ilgili aklınıza takılan bir şey var mı? Yardımcı olmaktan memnuniyet duyarım.\n{link}';
+
+/* ---------------- durum ---------------- */
+const D = { ot: undefined, store: null, users: [], quotes: [], products: [], views: {}, yuk: {}, kop: [] };
+const A = { girisMod: 'giris', filtre: 'acik', ara: '', sipFiltre: 'aktif', urunAra: '', rapor: 'ay', taslak: null, taslakId: undefined, kalem: null, kalemIdx: -1, kalemAdim: 'liste', kalemAra: '', urun: null, pub: {}, magazalar: null };
+const fotoBellek = new Map();
+
+const hesap = q => {
+  const ara = (q.items || []).reduce((t, i) => t + (+i.price || 0) * (+i.qty || 1), 0);
+  let ind = q.discountType === 'yuzde' ? ara * sayi(q.discountVal) / 100 : sayi(q.discountVal);
+  ind = Math.min(Math.max(Math.round(ind), 0), ara);
+  return { ara, ind, toplam: ara - ind };
+};
+const odenen = q => ((q.order && q.order.payments) || []).reduce((t, p) => t + (+p.amount || 0), 0);
+const kalan = q => Math.max(0, (+q.total || 0) - odenen(q));
+const aktifMi = () => B.mod === 'deneme' || !!(D.store && D.store.paidUntil > Date.now());
+const kayit = text => ({ at: Date.now(), by: D.ot.user.name, text });
+const teklifLink = id => location.href.split('#')[0] + '#t-' + id;
+
+function durum(q) {
+  if (q.status === 'kaybedildi') return { kod: 'kayip', etiket: 'Kaybedildi', ton: 'kirmizi' };
+  if (q.status === 'kazanildi') { const a = (q.order && q.order.stage) || 'siparis'; return { kod: 'siparis', etiket: asamaAd(a), ton: a === 'teslim' ? 'yesil' : 'mavi' }; }
+  const b = gunStr();
+  if (q.followUpAt && q.followUpAt < b) return { kod: 'ara', etiket: 'Arama gecikti', ton: 'kirmizi' };
+  if (q.followUpAt && q.followUpAt === b) return { kod: 'ara', etiket: 'Bugün aranacak', ton: 'amber' };
+  if (q.validUntil && q.validUntil < b) return { kod: 'acik', etiket: 'Süresi doldu', ton: '' };
+  return { kod: 'acik', etiket: 'Yanıt bekliyor', ton: '' };
+}
+function ozet(q) {
+  const i = q.items || []; if (!i.length) return '';
+  return i[0].name + (i.length > 1 ? ' + ' + (i.length - 1) + ' ürün' : '');
+}
+/* Müşterinin gördüğü sayfanın verisi: iç notlar ve arama geçmişi buraya girmez */
+function herkeseAcik(q) {
+  const st = D.store || {};
+  return {
+    storeId: D.ot.storeId, no: q.no || 0,
+    store: { name: st.name || '', phone: st.phone || '', whatsapp: st.whatsapp || '', address: st.address || '', logo: st.logo || '' },
+    customerName: q.customer.name || '', seller: q.createdByName || '',
+    items: (q.items || []).map(i => ({ name: i.name || '', variant: i.variant || '', qty: +i.qty || 1, price: +i.price || 0, photoId: i.photoId || '' })),
+    ara: +q.subtotal || 0, ind: +q.discount || 0, toplam: +q.total || 0,
+    note: q.note || '', terms: st.terms || '', kvkk: st.kvkk || '', validUntil: q.validUntil || '', createdAt: q.createdAt || Date.now(),
+    status: q.status || 'acik',
+    order: q.status === 'kazanildi' && q.order ? { stage: q.order.stage || 'siparis', deliveryDate: q.order.deliveryDate || '', slot: q.order.slot || '', paid: odenen(q) } : null,
+    updatedAt: Date.now()
+  };
+}
+function doldur(sablon, q) {
+  const st = D.store || {};
+  const o = q.order || {};
+  const v = { ad: q.customer.name, magaza: st.name || '', link: teklifLink(q.id), toplam: para(q.total), gecerlilik: tarih(q.validUntil), teslimat: o.deliveryDate ? tarih(o.deliveryDate, true) + (o.slot ? ' ' + o.slot : '') : 'yakın bir tarih' };
+  return sablon.replace(/\{(\w+)\}/g, (m, k) => (k in v ? v[k] : m));
+}
+const mesajTeklif = q => doldur((D.store && D.store.msgQuote) || VARS_MESAJ, q);
+
+/* ---------------- küçük arayüz araçları ---------------- */
+function toast(metin, hata) {
+  const k = $('#toast'); k.innerHTML = ''; const d = document.createElement('div'); if (hata) d.className = 'hata'; d.textContent = metin; k.appendChild(d);
+  setTimeout(() => d.remove(), hata ? 4200 : 2600);
+}
+const HATA = {
+  'auth/invalid-credential': 'E-posta ya da şifre hatalı.', 'auth/wrong-password': 'E-posta ya da şifre hatalı.', 'auth/user-not-found': 'E-posta ya da şifre hatalı.',
+  'auth/invalid-login-credentials': 'E-posta ya da şifre hatalı.',
+  'auth/email-already-in-use': 'Bu e-posta ile kayıt var. Giriş yapmayı deneyin.', 'auth/weak-password': 'Şifre en az 6 karakter olmalı.',
+  'auth/invalid-email': 'E-posta adresi geçersiz.', 'auth/too-many-requests': 'Çok fazla deneme yapıldı. Birkaç dakika sonra tekrar deneyin.',
+  'auth/network-request-failed': 'İnternet bağlantısı yok.', 'auth/operation-not-allowed': 'E-posta ile giriş Firebase panelinde açılmamış.',
+  'permission-denied': 'Bu işlem için yetkiniz yok ya da abonelik süresi dolmuş.', 'unavailable': 'İnternet bağlantısı yok. Bağlanınca tekrar deneyin.'
+};
+function hataGoster(e) { console.warn(e); toast(HATA[e && e.code] || (e && e.message) || 'Bir sorun oluştu, tekrar deneyin.', true); }
+function mesgul(btn, acik) {
+  if (!btn) return;
+  if (acik) { btn.dataset.eski = btn.innerHTML; btn.disabled = true; btn.textContent = 'Bekleyin…'; }
+  else if (btn.isConnected && btn.dataset.eski != null) { btn.disabled = false; btn.innerHTML = btn.dataset.eski; delete btn.dataset.eski; }
+}
+function modalAc(html) { $('#modal-katman').innerHTML = `<div class="perde"><div class="modal" role="dialog" aria-modal="true">${html}</div></div>`; fotoDoldur(); }
+function modalKapat() { $('#modal-katman').innerHTML = ''; }
+const modalBas = baslik => `<div class="modal-bas"><h2>${esc(baslik)}</h2><button class="kapat" type="button" data-is="modal-kapat" aria-label="Kapat">${ik('carpi', 20)}</button></div>`;
+async function kopyala(metin) {
+  try { await navigator.clipboard.writeText(metin); toast('Kopyalandı'); }
+  catch (e) { modalAc(modalBas('Bağlantı') + `<p class="kucuk">Aşağıdaki bağlantıyı seçip kopyalayın.</p><textarea class="giris" readonly rows="3" id="kopya-alan">${esc(metin)}</textarea>`); const a = $('#kopya-alan'); a.focus(); a.select(); }
+}
+function gorselKucult(dosya, enBuyuk, hedef, tur) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onerror = () => rej(new Error('Fotoğraf okunamadı'));
+    r.onload = () => {
+      const img = new Image();
+      img.onerror = () => rej(new Error('Fotoğraf açılamadı'));
+      img.onload = () => {
+        const o = Math.min(1, enBuyuk / Math.max(img.width, img.height));
+        const c = document.createElement('canvas'); c.width = Math.max(1, Math.round(img.width * o)); c.height = Math.max(1, Math.round(img.height * o));
+        const x = c.getContext('2d');
+        if (tur === 'png') { x.drawImage(img, 0, 0, c.width, c.height); const p = c.toDataURL('image/png'); if (p.length <= hedef) return res(p); }
+        x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); x.drawImage(img, 0, 0, c.width, c.height);
+        let k = 0.82, u = c.toDataURL('image/jpeg', k);
+        while (u.length > hedef && k > 0.35) { k -= 0.1; u = c.toDataURL('image/jpeg', k); }
+        res(u);
+      };
+      img.src = r.result;
+    };
+    r.readAsDataURL(dosya);
+  });
+}
+/* data-foto="id" taşıyan görselleri sonradan doldurur */
+function fotoDoldur() {
+  $$('img[data-foto]').forEach(img => {
+    const id = img.dataset.foto; if (!id || img.dataset.tamam) return;
+    img.dataset.tamam = '1';
+    if (fotoBellek.has(id)) { const v = fotoBellek.get(id); if (typeof v === 'string') { img.src = v; return; } v.then(u => { if (u) img.src = u; }); return; }
+    const s = B.getPhoto(id).then(u => { fotoBellek.set(id, u || ''); return u; }).catch(() => '');
+    fotoBellek.set(id, s); s.then(u => { if (u) img.src = u; });
+  });
+}
+const BOS_GORSEL = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 6"><rect width="8" height="6" fill="#888" fill-opacity=".18"/></svg>');
+const resim = (photoId, sinif) => photoId ? `<img class="${sinif}" src="${BOS_GORSEL}" data-foto="${esc(photoId)}" alt="">` : `<span class="${sinif}">${ik('koltuk', 26)}</span>`;
+
+/* ============================================================
+   Ekranlar
+   ============================================================ */
+function rotaOku() {
+  let h = location.hash.replace(/^#/, ''); try { h = decodeURIComponent(h); } catch (e) { /* olduğu gibi */ }
+  const m = h.match(/^(t|teklif|duzenle)-(.+)$/);
+  return m ? { ad: m[1], id: m[2] } : { ad: h, id: null };
+}
+const bekle = metin => `<div class="yukleniyor">${esc(metin)}</div>`;
+
+function ciz() {
+  const r = rotaOku(), app = $('#app');
+  const a = document.activeElement;
+  const odak = a && a.id && app.contains(a) ? { id: a.id, bas: a.selectionStart, son: a.selectionEnd } : null;
+  let html;
+  if (r.ad === 't') html = musteriSayfa(r.id);
+  else if (D.ot === undefined) html = bekle('Yükleniyor…');
+  else if (D.ot === null) html = girisSayfa();
+  else if (D.ot.hata) html = durumSayfa('Bağlantı kurulamadı', 'İnternet bağlantınızı kontrol edip sayfayı yenileyin.', true);
+  else if (D.ot.eksik) html = tamamlaSayfa();
+  else if (!D.ot.user) html = D.ot.admin ? `<div class="m-sayfa">${yonetimG()}</div>` : durumSayfa('Hesap bulunamadı', 'Bu hesap bir mağazaya bağlı değil.', true);
+  else if (D.ot.user.active === false) html = durumSayfa('Hesabınız kapatılmış', 'Tekrar açılması için mağaza sahibiyle görüşün.', true);
+  else if (!D.yuk.store || !D.yuk.quotes) html = bekle('Mağaza verileri yükleniyor…');
+  else if (!D.store) html = durumSayfa('Mağaza bulunamadı', 'Mağaza kaydına ulaşılamadı.', true);
+  else html = kabuk(r);
+  app.innerHTML = html;
+  if (odak) { const y = document.getElementById(odak.id); if (y) { y.focus(); try { y.setSelectionRange(odak.bas, odak.son); } catch (e) { /* tarih alanı */ } } }
+  fotoDoldur();
+}
+function veriGeldi() {
+  const r = rotaOku();
+  if (r.ad === 'yeni' || r.ad === 'duzenle') { if (!A.taslak) ciz(); return; }
+  const a = document.activeElement;
+  if (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) && a.id !== 'ara' && $('#app').contains(a)) return;
+  ciz();
+}
+
+/* ---------------- giriş ekranları ---------------- */
+const marka = () => `<div class="marka">${ik('koltuk', 28)}<span>${esc(AYAR.uygulamaAdi)}</span></div>`;
+function durumSayfa(baslik, metin, cikis) {
+  return `<div class="giris-sayfa"><div class="giris-kutu">${marka()}<div class="kart"><h2>${esc(baslik)}</h2><p>${esc(metin)}</p>${cikis ? '<button class="btn ikincil" data-is="cikis">Çıkış yap</button>' : ''}</div></div></div>`;
+}
+function girisSayfa() {
+  const m = A.girisMod;
+  let ic;
+  if (m === 'kayit') ic = `
+    <div><h1>Mağazanı kaydet</h1><p class="kucuk">${AYAR.denemeGun} gün ücretsiz dene. Kart bilgisi istenmez.</p></div>
+    <form class="kart" data-form="kayit">
+      <label class="alan"><span>Mağaza adı</span><input class="giris" id="k-magaza" name="storeName" required autocomplete="organization" placeholder="Örn. Yıldız Mobilya"></label>
+      <label class="alan"><span>Adınız soyadınız</span><input class="giris" id="k-ad" name="name" required autocomplete="name"></label>
+      <label class="alan"><span>Mağaza telefonu</span><input class="giris" id="k-tel" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="05xx xxx xx xx"></label>
+      <label class="alan"><span>E-posta</span><input class="giris" id="k-eposta" name="email" type="email" required autocomplete="email"></label>
+      <label class="alan"><span>Şifre</span><input class="giris" id="k-sifre" name="pass" type="password" required minlength="6" autocomplete="new-password"><small>En az 6 karakter</small></label>
+      <button class="btn buyuk" type="submit">Ücretsiz başla</button>
+    </form>
+    <p>Hesabın var mı? <button class="baglanti" data-is="giris-mod" data-mod="giris">Giriş yap</button></p>`;
+  else if (m === 'sifre') ic = `
+    <div><h1>Şifreni sıfırla</h1><p class="kucuk">E-posta adresine sıfırlama bağlantısı göndeririz.</p></div>
+    <form class="kart" data-form="sifre">
+      <label class="alan"><span>E-posta</span><input class="giris" id="s-eposta" name="email" type="email" required autocomplete="email"></label>
+      <button class="btn buyuk" type="submit">Bağlantı gönder</button>
+    </form>
+    <p><button class="baglanti" data-is="giris-mod" data-mod="giris">Girişe dön</button></p>`;
+  else ic = `
+    <div><h1>Giriş yap</h1><p class="kucuk">Teklif ver, takip et, siparişi teslim et.</p></div>
+    ${B.mod === 'deneme' ? '<div class="serit"><div><strong>Deneme modu.</strong> Herhangi bir e-posta ve şifre yazıp girebilirsiniz.</div></div>' : ''}
+    <form class="kart" data-form="giris">
+      <label class="alan"><span>E-posta</span><input class="giris" id="g-eposta" name="email" type="email" required autocomplete="email"></label>
+      <label class="alan"><span>Şifre</span><input class="giris" id="g-sifre" name="pass" type="password" required autocomplete="current-password"></label>
+      <button class="btn buyuk" type="submit">Giriş yap</button>
+      <button class="baglanti" type="button" data-is="giris-mod" data-mod="sifre">Şifremi unuttum</button>
+    </form>
+    <p>Mağazan kayıtlı değil mi? <button class="baglanti" data-is="giris-mod" data-mod="kayit">${AYAR.denemeGun} gün ücretsiz dene</button></p>`;
+  return `<div class="giris-sayfa"><div class="giris-kutu">${marka()}${ic}</div></div>`;
+}
+function tamamlaSayfa() {
+  return `<div class="giris-sayfa"><div class="giris-kutu">${marka()}
+    <div><h1>Mağaza kaydını tamamla</h1><p class="kucuk">Hesabın açıldı, mağaza bilgileri eksik kaldı.</p></div>
+    <form class="kart" data-form="tamamla">
+      <label class="alan"><span>Mağaza adı</span><input class="giris" id="tm-magaza" name="storeName" required></label>
+      <label class="alan"><span>Adınız soyadınız</span><input class="giris" id="tm-ad" name="name" required></label>
+      <label class="alan"><span>Mağaza telefonu</span><input class="giris" id="tm-tel" name="phone" type="tel" inputmode="tel"></label>
+      <button class="btn buyuk" type="submit">Kaydı tamamla</button>
+    </form>
+    <p><button class="baglanti" data-is="cikis">Çıkış yap</button></p></div></div>`;
+}
+
+/* ---------------- kabuk ---------------- */
+const NAV = [['bugun', 'Bugün', 'ev'], ['teklifler', 'Teklifler', 'belge'], ['siparisler', 'Siparişler', 'kutu'], ['teslimat', 'Teslimat', 'kamyon'], ['urunler', 'Ürünler', 'koltuk'], ['rapor', 'Rapor', 'grafik'], ['ayarlar', 'Ayarlar', 'ayar']];
+const IZIN = {
+  sahip: ['bugun', 'teklifler', 'teklif', 'yeni', 'duzenle', 'siparisler', 'teslimat', 'urunler', 'rapor', 'ayarlar', 'menu', 'yonetim'],
+  danisman: ['bugun', 'teklifler', 'teklif', 'yeni', 'duzenle', 'siparisler', 'teslimat', 'urunler', 'ayarlar', 'menu'],
+  teslimat: ['teslimat', 'teklif', 'ayarlar']
+};
+function seritler() {
+  let s = '';
+  const u = D.ot.user;
+  if (B.mod === 'deneme') {
+    s += `<div class="serit"><div><strong>Deneme modu.</strong> Buradaki mağaza ve müşteriler örnektir; girdikleriniz yalnızca bu tarayıcıda kalır.</div>
+      <div class="roller"><span>Şu rolde gör:</span>${[['u1', 'Sahip'], ['u2', 'Danışman'], ['u4', 'Teslimat']].map(([uid, ad]) => `<button data-is="demo-rol" data-uid="${uid}" class="${u.uid === uid ? 'secili' : ''}">${ad}</button>`).join('')}<button data-is="demo-sifirla">Sıfırla</button></div></div>`;
+  } else if (D.store) {
+    const kalanGun = Math.ceil((D.store.paidUntil - Date.now()) / GUN);
+    const destek = AYAR.destekWhatsapp ? ` <a class="baglanti" href="${waLink(AYAR.destekWhatsapp, D.store.name + ' için abonelik hakkında yazıyorum.')}" target="_blank" rel="noopener">Bize yazın</a>` : '';
+    if (kalanGun <= 0) s += `<div class="serit kirmizi"><div><strong>Abonelik süresi doldu.</strong> Kayıtlarınız duruyor; yeni teklif ve değişiklik için aboneliği yenileyin.${destek}</div></div>`;
+    else if (u.role === 'sahip' && (D.store.plan === 'deneme' || kalanGun <= 5)) s += `<div class="serit"><div><strong>${D.store.plan === 'deneme' ? 'Ücretsiz deneme' : 'Abonelik'}:</strong> ${kalanGun} gün kaldı.${destek}</div></div>`;
+  }
+  return s;
+}
+function kabuk(r) {
+  const u = D.ot.user, rol = u.role;
+  let ad = r.ad; if (!IZIN[rol].includes(ad)) ad = rol === 'teslimat' ? 'teslimat' : 'bugun';
+  const gorunum = { bugun: bugunG, teklifler: tekliflerG, teklif: () => detayG(r.id), yeni: () => formG(null), duzenle: () => formG(r.id), siparisler: siparislerG, teslimat: teslimatG, urunler: urunlerG, rapor: raporG, ayarlar: ayarlarG, menu: menuG, yonetim: yonetimG }[ad]();
+  const formMu = ad === 'yeni' || ad === 'duzenle';
+  let secili = ad;
+  if (ad === 'teklif') { const q = D.quotes.find(x => x.id === r.id); secili = rol === 'teslimat' ? 'teslimat' : (q && q.status === 'kazanildi' ? 'siparisler' : 'teklifler'); }
+  if (formMu) secili = 'teklifler';
+  const ogeler = NAV.filter(n => IZIN[rol].includes(n[0]));
+  const yan = `<aside class="yan">${marka()}
+    ${rol !== 'teslimat' ? `<a class="btn" href="#yeni" style="margin:0 0 10px">${ik('arti')} Yeni teklif</a>` : ''}
+    ${ogeler.map(n => `<a class="oge ${secili === n[0] ? 'secili' : ''}" href="#${n[0]}">${ik(n[2])}<span>${n[1]}</span></a>`).join('')}
+    ${D.ot.admin ? `<a class="oge ${secili === 'yonetim' ? 'secili' : ''}" href="#yonetim">${ik('kisi')}<span>Yönetim</span></a>` : ''}
+    <div class="magaza"><strong>${esc(D.store.name)}</strong>${esc(u.name)} · ${ROL[rol]}</div></aside>`;
+  let alt = '';
+  if (!formMu) {
+    const menuMu = ['teslimat', 'urunler', 'rapor', 'ayarlar', 'menu', 'yonetim'].includes(secili);
+    if (rol === 'teslimat') alt = `<nav class="alt-nav" style="grid-template-columns:repeat(2,1fr)">
+      <a href="#teslimat" class="${secili === 'teslimat' ? 'secili' : ''}">${ik('kamyon')}Teslimat</a>
+      <a href="#ayarlar" class="${secili === 'ayarlar' ? 'secili' : ''}">${ik('kisi')}Hesap</a></nav>`;
+    else alt = `<nav class="alt-nav">
+      <a href="#bugun" class="${secili === 'bugun' ? 'secili' : ''}">${ik('ev')}Bugün</a>
+      <a href="#teklifler" class="${secili === 'teklifler' ? 'secili' : ''}">${ik('belge')}Teklifler</a>
+      <a href="#yeni" class="yeni-dugme">${ik('arti')}Yeni</a>
+      <a href="#siparisler" class="${secili === 'siparisler' ? 'secili' : ''}">${ik('kutu')}Siparişler</a>
+      <a href="#menu" class="${menuMu ? 'secili' : ''}">${ik('menu')}Menü</a></nav>`;
+  }
+  return `<div class="kabuk">${yan}<main class="icerik ${formMu ? 'form-modu' : ''}">${seritler()}${gorunum}</main></div>${alt}`;
+}
+const sayfaBas = (baslik, sag) => `<div class="ust-cubuk"><h1>${esc(baslik)}</h1>${sag || ''}</div>`;
+
+/* ---------------- ortak parçalar ---------------- */
+function teklifSatir(q, altMetin) {
+  const d = durum(q);
+  const alt = altMetin || [ozet(q), teklifNo(q.no), D.ot.user.role === 'sahip' ? q.createdByName : ''].filter(Boolean).join(' · ');
+  return `<a class="satir" href="#teklif-${esc(q.id)}"><div class="satir-ana"><div class="satir-ust"><strong>${esc(q.customer.name)}</strong><span class="rozet ${d.ton}">${d.etiket}</span></div><div class="satir-alt">${esc(alt)}</div></div><div class="satir-sag"><span class="tutar">${para(q.total)}</span><span class="kucuk">${tarih(q.createdAt)}</span></div></a>`;
+}
+const liste = (satirlar, bosMetin) => satirlar.length ? `<div class="liste">${satirlar.join('')}</div>` : `<div class="bos">${esc(bosMetin)}</div>`;
+
+/* ---------------- Bugün ---------------- */
+function bugunG() {
+  const b = gunStr(), u = D.ot.user;
+  const acik = D.quotes.filter(q => q.status === 'acik');
+  const aranacak = acik.filter(q => q.followUpAt && q.followUpAt <= b).sort((x, y) => x.followUpAt.localeCompare(y.followUpAt));
+  const bakti = acik.filter(q => D.views[q.id] && D.views[q.id].last > Date.now() - 2 * GUN).sort((x, y) => D.views[y.id].last - D.views[x.id].last).slice(0, 5);
+  const teslim = D.quotes.filter(q => q.status === 'kazanildi' && q.order && q.order.stage !== 'teslim' && q.order.deliveryDate === b);
+  const ay = new Date(); ay.setDate(1); ay.setHours(0, 0, 0, 0); const t0 = ay.getTime();
+  const verilen = D.quotes.filter(q => q.createdAt >= t0).length;
+  const kazanilan = D.quotes.filter(q => q.status === 'kazanildi' && q.wonAt >= t0);
+  const s = new Date().getHours();
+  const selam = s < 11 ? 'Günaydın' : s < 18 ? 'İyi günler' : 'İyi akşamlar';
+  return `
+    <div class="ust-cubuk"><div><h1>${selam}, ${esc(u.name.split(' ')[0])}</h1><p class="kucuk">${tarih(b, true)}</p></div></div>
+    <section class="bolum"><div class="bolum-bas"><h2>Bugün aranacaklar</h2><span class="kucuk sayi">${aranacak.length} müşteri</span></div>
+      ${liste(aranacak.map(q => teklifSatir(q, [q.customer.phone, ozet(q), D.views[q.id] ? 'teklife ' + once(D.views[q.id].last) + ' baktı' : 'teklifi henüz açmadı'].filter(Boolean).join(' · '))), 'Bugün aranacak müşteri yok. Yeni teklif verdiğinizde takip günü geldiğinde burada görünür.')}
+    </section>
+    ${bakti.length ? `<section class="bolum"><div class="bolum-bas"><h2>Teklifine bakanlar</h2><span class="kucuk">son 2 gün</span></div>
+      ${liste(bakti.map(q => teklifSatir(q, `${D.views[q.id].views} kez açtı · son bakış ${once(D.views[q.id].last)}`)), '')}</section>` : ''}
+    <section class="bolum"><div class="bolum-bas"><h2>Bugünkü teslimatlar</h2><a class="baglanti" href="#teslimat">Takvim</a></div>
+      ${liste(teslim.map(q => teklifSatir(q, [q.order.slot, q.order.address, kalan(q) ? 'kalan ' + para(kalan(q)) : 'ödeme tamam'].filter(Boolean).join(' · '))), 'Bugün için planlı teslimat yok.')}
+    </section>
+    <section class="bolum"><div class="bolum-bas"><h2>${u.role === 'sahip' ? 'Bu ay mağaza' : 'Bu ay sizin'}</h2>${u.role === 'sahip' ? '<a class="baglanti" href="#rapor">Rapor</a>' : ''}</div>
+      <div class="rakamlar">
+        <div class="rakam"><b>${verilen}</b><span>verilen teklif</span></div>
+        <div class="rakam"><b>${kazanilan.length}</b><span>siparişe dönen</span></div>
+        <div class="rakam"><b>${para(kazanilan.reduce((t, q) => t + q.total, 0))}</b><span>sipariş cirosu</span></div>
+        <div class="rakam"><b>${para(acik.reduce((t, q) => t + q.total, 0))}</b><span>${acik.length} açık teklif</span></div>
+      </div>
+    </section>`;
+}
+
+/* ---------------- Teklifler ---------------- */
+function teklifSuz() {
+  const b = gunStr(), ara = A.ara.trim().toLocaleLowerCase('tr');
+  const kume = {
+    acik: q => q.status === 'acik',
+    ara: q => q.status === 'acik' && q.followUpAt && q.followUpAt <= b,
+    kazanildi: q => q.status === 'kazanildi',
+    kaybedildi: q => q.status === 'kaybedildi',
+    tumu: () => true
+  };
+  const eslesir = q => !ara || [q.customer.name, q.customer.phone, teklifNo(q.no), (q.items || []).map(i => i.name).join(' ')].join(' ').toLocaleLowerCase('tr').includes(ara) || (ara.replace(/\D/g, '').length > 3 && String(q.customer.phone || '').replace(/\D/g, '').includes(ara.replace(/\D/g, '')));
+  const sayim = {}; for (const k in kume) sayim[k] = D.quotes.filter(kume[k]).length;
+  const sonuc = D.quotes.filter(q => (ara ? true : kume[A.filtre](q)) && eslesir(q)).sort((x, y) => y.createdAt - x.createdAt);
+  return { sayim, sonuc, ara };
+}
+function teklifListeHtml() {
+  const { sonuc, ara } = teklifSuz();
+  return liste(sonuc.map(q => teklifSatir(q)), ara ? 'Aramayla eşleşen teklif yok.' : 'Bu bölümde teklif yok.');
+}
+function tekliflerG() {
+  const { sayim } = teklifSuz();
+  const sekme = (k, ad) => `<button class="sekme ${A.filtre === k ? 'secili' : ''}" data-is="filtre" data-k="${k}">${ad}<span class="adet">${sayim[k]}</span></button>`;
+  return `${sayfaBas('Teklifler')}
+    <label class="arama">${ik('ara', 20)}<input class="giris" id="ara" type="search" data-in="ara" value="${esc(A.ara)}" placeholder="Müşteri adı, telefon ya da ürün ara" aria-label="Tekliflerde ara"></label>
+    <div class="sekmeler">${sekme('acik', 'Açık')}${sekme('ara', 'Aranacak')}${sekme('kazanildi', 'Sipariş oldu')}${sekme('kaybedildi', 'Kaybedildi')}${sekme('tumu', 'Tümü')}</div>
+    <div id="liste-kap">${teklifListeHtml()}</div>`;
+}
+
+/* ---------------- Teklif formu ---------------- */
+function yeniTaslak() {
+  const st = D.store || {};
+  return { id: null, customer: { name: '', phone: '' }, items: [], discountType: 'tl', discountVal: '', note: '', internalNote: '', validUntil: gunEkle(+st.validDays || 7), followUpAt: gunEkle(+st.followDays || 3) };
+}
+function toplamHtml(t) {
+  const h = hesap(t);
+  return `<div><span>Ara toplam</span><span>${para(h.ara)}</span></div>${h.ind ? `<div><span>İndirim</span><span>− ${para(h.ind)}</span></div>` : ''}<div class="genel"><span>Toplam</span><span>${para(h.toplam)}</span></div>`;
+}
+function formG(id) {
+  const anahtar = id || 'yeni';
+  if (A.taslakId !== anahtar || !A.taslak) {
+    if (id) { const q = D.quotes.find(x => x.id === id); if (!q) return bulunamadi(); A.taslak = kopya({ id: q.id, customer: q.customer, items: q.items, discountType: q.discountType || 'tl', discountVal: q.discountVal || '', note: q.note || '', internalNote: q.internalNote || '', validUntil: q.validUntil || '', followUpAt: q.followUpAt || '' }); }
+    else A.taslak = yeniTaslak();
+    A.taslakId = anahtar;
+  }
+  const t = A.taslak, acikMi = !id || (D.quotes.find(x => x.id === id) || {}).status === 'acik';
+  return `
+    <button class="geri" data-is="vazgec">${ik('geri', 20)} Vazgeç</button>
+    <h1>${id ? 'Teklifi düzenle' : 'Yeni teklif'}</h1>
+    <div class="kart"><h2>Müşteri</h2>
+      <div class="alanlar cift">
+        <label class="alan"><span>Adı soyadı</span><input class="giris" id="t-ad" data-t="customer.name" value="${esc(t.customer.name)}" autocomplete="off" placeholder="Örn. Ayşe Yılmaz"></label>
+        <label class="alan"><span>Telefonu</span><input class="giris" id="t-tel" data-t="customer.phone" value="${esc(t.customer.phone)}" type="tel" inputmode="tel" autocomplete="off" placeholder="05xx xxx xx xx"><small>Teklif bu numaraya WhatsApp'tan gider.</small></label>
+      </div>
+    </div>
+    <div class="kart"><h2>Ürünler</h2>
+      ${t.items.length ? `<div>${t.items.map((i, n) => `<button class="kalem satir" style="padding-inline:0" data-is="kalem-duzenle" data-n="${n}">${resim(i.photoId, 'kucuk-resim')}<span class="kalem-ana"><strong>${esc(i.name)}</strong><span class="kucuk">${esc([i.variant, i.qty > 1 ? i.qty + ' adet × ' + para(i.price) : ''].filter(Boolean).join(' · '))}</span></span><span class="tutar">${para(i.price * i.qty)}</span></button>`).join('')}</div>` : '<p class="kucuk">Henüz ürün eklenmedi. Ürünün fotoğrafını çekip fiyatını yazmanız yeterli.</p>'}
+      <button class="btn yumusak buyuk tam" data-is="kalem-yeni">${ik('arti')} Ürün ekle</button>
+    </div>
+    <div class="kart"><h2>İndirim ve toplam</h2>
+      <div class="alanlar cift">
+        <div class="alan"><span>İndirim türü</span><div class="ikili-sec"><button type="button" data-is="indirim-tur" data-k="tl" class="${t.discountType !== 'yuzde' ? 'secili' : ''}">₺ Tutar</button><button type="button" data-is="indirim-tur" data-k="yuzde" class="${t.discountType === 'yuzde' ? 'secili' : ''}">% Oran</button></div></div>
+        <label class="alan"><span>İndirim</span><input class="giris" id="t-ind" data-t="discountVal" value="${esc(t.discountVal)}" inputmode="decimal" placeholder="0"></label>
+      </div>
+      <div class="toplamlar" id="t-toplam">${toplamHtml(t)}</div>
+    </div>
+    <div class="kart"><h2>Notlar</h2>
+      <label class="alan"><span>Müşteriye not</span><textarea class="giris" id="t-not" data-t="note" placeholder="Teklif sayfasında görünür. Örn. Kumaş rengi değiştirilebilir.">${esc(t.note)}</textarea></label>
+      <label class="alan"><span>Mağaza içi not</span><textarea class="giris" id="t-ic" data-t="internalNote" placeholder="Müşteri görmez. Örn. Eşiyle tekrar gelecek.">${esc(t.internalNote)}</textarea></label>
+    </div>
+    ${acikMi ? `<div class="kart"><h2>Tarihler</h2>
+      <div class="alanlar cift">
+        <label class="alan"><span>Teklif ne zamana kadar geçerli?</span><input class="giris" id="t-gecerli" data-t="validUntil" type="date" value="${esc(t.validUntil)}"></label>
+        <label class="alan"><span>Müşteri ne zaman aranacak?</span><input class="giris" id="t-takip" data-t="followUpAt" type="date" value="${esc(t.followUpAt)}"><small>O gün "Bugün aranacaklar" listesine düşer.</small></label>
+      </div></div>` : ''}
+    <div class="alt-cubuk"><div><span class="kucuk">Toplam</span><div class="tutar" id="t-alt">${para(hesap(t).toplam)}</div></div><button class="btn buyuk" data-is="teklif-kaydet">${id ? 'Değişiklikleri kaydet' : 'Teklifi kaydet'}</button></div>`;
+}
+function kalemModalHtml() {
+  const k = A.kalem;
+  if (A.kalemAdim === 'liste') {
+    return modalBas('Ürün ekle') + `
+      <button class="btn buyuk tam" data-is="kalem-bos">${ik('kamera')} Yeni ürün, fotoğraf çek</button>
+      <label class="arama">${ik('ara', 20)}<input class="giris" id="kalem-ara" data-in="kalem-ara" value="${esc(A.kalemAra)}" placeholder="Kayıtlı ürünlerde ara" aria-label="Kayıtlı ürünlerde ara"></label>
+      <div id="kalem-liste">${kalemListeHtml()}</div>`;
+  }
+  const gorsel = k.fotoVeri ? `<img src="${k.fotoVeri}" alt="">` : k.photoId ? `<img src="${BOS_GORSEL}" data-foto="${esc(k.photoId)}" alt="">` : `${ik('kamera', 34)}<span>Fotoğraf çek ya da seç</span>`;
+  return modalBas(A.kalemIdx >= 0 ? 'Ürünü düzenle' : 'Ürün bilgisi') + `
+    <label class="foto-al">${gorsel}<input type="file" accept="image/*" data-dosya="kalem" aria-label="Ürün fotoğrafı"></label>
+    <label class="alan"><span>Ürün adı</span><input class="giris" id="kl-ad" data-k="name" value="${esc(k.name)}" placeholder="Örn. Lizbon Köşe Takımı"></label>
+    <label class="alan"><span>Özellik</span><input class="giris" id="kl-ozellik" data-k="variant" value="${esc(k.variant)}" placeholder="Kumaş, renk, ölçü"></label>
+    <div class="alanlar cift" style="grid-template-columns:auto minmax(0,1fr)">
+      <div class="alan"><span>Adet</span><div class="adet-sec"><button type="button" data-is="kalem-adet" data-d="-1" aria-label="Azalt">−</button><span id="kl-adet">${k.qty}</span><button type="button" data-is="kalem-adet" data-d="1" aria-label="Artır">+</button></div></div>
+      <label class="alan"><span>Birim fiyat (₺)</span><input class="giris" id="kl-fiyat" data-k="price" value="${esc(k.price)}" inputmode="decimal" placeholder="0"></label>
+    </div>
+    ${!k.productId ? `<label class="onay"><input type="checkbox" id="kl-kaydet" data-kc="kaydet" ${k.kaydet ? 'checked' : ''}> Sonraki teklifler için ürünlere kaydet</label>` : ''}
+    <div class="dugmeler">
+      ${A.kalemIdx >= 0 ? '<button class="btn tehlike" data-is="kalem-sil">Tekliften çıkar</button>' : ''}
+      <button class="btn buyuk" data-is="kalem-tamam">${A.kalemIdx >= 0 ? 'Güncelle' : 'Teklife ekle'}</button>
+    </div>`;
+}
+function kalemListeHtml() {
+  const ara = A.kalemAra.trim().toLocaleLowerCase('tr');
+  const l = D.products.filter(p => !ara || p.name.toLocaleLowerCase('tr').includes(ara)).sort((x, y) => x.name.localeCompare(y.name, 'tr')).slice(0, 40);
+  if (!l.length) return `<p class="kucuk">${D.products.length ? 'Eşleşen ürün yok.' : 'Kayıtlı ürün yok. Eklediğiniz ürünler burada birikir.'}</p>`;
+  return `<div class="liste">${l.map(p => `<button class="satir" data-is="kalem-sec" data-id="${esc(p.id)}">${p.thumb ? `<img class="kucuk-resim" src="${p.thumb}" alt="">` : resim('', 'kucuk-resim')}<span class="satir-ana"><strong>${esc(p.name)}</strong></span><span class="tutar">${para(p.price)}</span></button>`).join('')}</div>`;
+}
+const bulunamadi = () => `<button class="geri" data-is="geri">${ik('geri', 20)} Geri</button><div class="bos">Teklif bulunamadı. Silinmiş ya da size ait olmayabilir.</div>`;
+
+/* ---------------- Teklif detayı ---------------- */
+function detayG(id) {
+  const q = D.quotes.find(x => x.id === id);
+  if (!q) return bulunamadi();
+  const d = durum(q), rol = D.ot.user.role, v = D.views[id], o = q.order || {};
+  const satis = rol !== 'teslimat';
+  const tel = q.customer.phone;
+  const musteri = `<div class="kart">
+      <div class="kart-bas"><div><h2>${esc(q.customer.name)}</h2>${tel ? `<span class="sec sayi">${esc(tel)}</span>` : '<span class="kucuk">Telefon girilmemiş</span>'}</div><span class="rozet ${d.ton}">${d.etiket}</span></div>
+      ${satis ? `<p class="kucuk">${q.sentAt ? 'Son gönderim ' + once(q.sentAt) + '. ' : 'Henüz gönderilmedi. '}${v ? `Müşteri teklifi ${v.views} kez açtı, son bakış ${once(v.last)}.` : (q.sentAt ? 'Müşteri teklifi henüz açmadı.' : '')}</p>
+      <div class="dugmeler">
+        <a class="btn buyuk" href="${waLink(tel, mesajTeklif(q))}" target="_blank" rel="noopener" data-is="wa-teklif" data-id="${esc(id)}">${ik('wa')} ${q.sentAt ? 'Tekrar gönder' : "WhatsApp'tan gönder"}</a>
+      </div>
+      <div class="dugmeler">
+        <button class="btn ikincil" data-is="link-kopya" data-id="${esc(id)}">${ik('kopya', 20)} Bağlantıyı kopyala</button>
+        <a class="btn ikincil" href="#t-${esc(id)}">${ik('goz', 20)} Müşteri ne görüyor?</a>
+        ${tel ? `<a class="btn ikincil" href="tel:${esc(telNo(tel) ? '+' + telNo(tel) : tel)}">${ik('tel', 20)} Ara</a>` : ''}
+      </div>` : `<div class="dugmeler">${tel ? `<a class="btn" href="tel:${esc('+' + telNo(tel))}">${ik('tel', 20)} Müşteriyi ara</a>` : ''}</div>`}
+    </div>`;
+
+  let orta = '';
+  if (q.status === 'acik' && satis) {
+    orta = `<div class="kart"><div class="kart-bas"><h2>Takip</h2>${q.followUpAt ? `<span class="rozet ${q.followUpAt <= gunStr() ? 'amber' : ''}">${ik('saat', 14)} ${yakin(q.followUpAt)}</span>` : '<span class="kucuk">Takip günü yok</span>'}</div>
+        <div class="dugmeler">
+          <button class="btn yumusak" data-is="arandi" data-id="${esc(id)}">${ik('tel', 20)} Aradım, not ekle</button>
+          <a class="btn ikincil" href="${waLink(tel, doldur(TAKIP_MESAJ, q))}" target="_blank" rel="noopener" data-is="wa-takip" data-id="${esc(id)}">${ik('wa', 20)} Hatırlatma yaz</a>
+        </div></div>
+      <div class="kart"><h2>Müşteri karar verdi mi?</h2>
+        <div class="dugmeler">
+          <button class="btn buyuk" data-is="siparis-ac" data-id="${esc(id)}">${ik('tik')} Siparişe çevir</button>
+          <button class="btn tehlike" data-is="kayip-ac" data-id="${esc(id)}">Almayacak</button>
+        </div></div>`;
+  } else if (q.status === 'kaybedildi') {
+    orta = `<div class="kart"><h2>Kaybedildi</h2><p>${esc(q.lostReason || 'Neden belirtilmedi')}</p>${satis ? `<div class="dugmeler"><button class="btn ikincil" data-is="yeniden-ac" data-id="${esc(id)}">Teklifi yeniden aç</button></div>` : ''}</div>`;
+  } else if (q.status === 'kazanildi') {
+    const sira = asamaSira(o.stage);
+    const k = kalan(q);
+    orta = `<div class="kart"><div class="kart-bas"><h2>Sipariş durumu</h2></div>
+        <div class="asamalar">${ASAMALAR.map((a, n) => `<button class="asama ${n < sira ? 'gecti' : ''} ${n === sira ? 'gecti simdi' : ''}" data-is="asama" data-id="${esc(id)}" data-k="${a[0]}"><span class="nokta">${n <= sira ? ik('tik', 16) : ''}</span>${a[1]}</button>`).join('')}</div>
+        <p class="kucuk">Aşamaya dokunarak durumu değiştirin.</p>
+        ${tel ? `<a class="btn yumusak" href="${waLink(tel, doldur(ASAMA_MESAJ[o.stage || 'siparis'], q))}" target="_blank" rel="noopener" data-is="wa-durum" data-id="${esc(id)}">${ik('wa', 20)} Müşteriye durumu bildir</a>` : ''}
+      </div>
+      <div class="kart"><div class="kart-bas"><h2>Teslimat</h2><button class="btn ikincil kucuk-b" data-is="teslimat-ac" data-id="${esc(id)}">${ik('kalem', 18)} Düzenle</button></div>
+        <div class="bilgi-satir">${ik('takvim', 20)}<span>${o.deliveryDate ? `<strong>${yakin(o.deliveryDate)}</strong> · ${tarih(o.deliveryDate, true)}${o.slot ? ' · ' + esc(o.slot) : ''}` : 'Teslimat günü belirlenmedi'}</span></div>
+        <div class="bilgi-satir">${ik('konum', 20)}<span>${o.address ? `${esc(o.address)} · <a class="baglanti" href="${haritaLink(o.address)}" target="_blank" rel="noopener">Haritada aç</a>` : 'Adres girilmedi'}</span></div>
+        ${o.team ? `<div class="bilgi-satir">${ik('kisi', 20)}<span>${esc(o.team)}</span></div>` : ''}
+        ${o.note ? `<div class="bilgi-satir">${ik('belge', 20)}<span>${esc(o.note)}</span></div>` : ''}
+      </div>
+      <div class="kart"><div class="kart-bas"><h2>Ödeme</h2><button class="btn ikincil kucuk-b" data-is="odeme-ac" data-id="${esc(id)}">${ik('arti', 18)} Ödeme ekle</button></div>
+        <div class="toplamlar"><div><span>Sipariş tutarı</span><span>${para(q.total)}</span></div><div><span>Alınan</span><span>${para(odenen(q))}</span></div>
+        <div class="genel"><span>Kalan</span><span style="color:var(${k ? '--kirmizi' : '--ana'})">${k ? para(k) : 'Ödeme tamam'}</span></div></div>
+        ${(o.payments || []).length ? `<div class="gecmis">${o.payments.slice().sort((x, y) => y.at - x.at).map(p => `<div>${para(p.amount)} · ${esc(p.method || '')}<small>${saatli(p.at)} · ${esc(p.by || '')}</small></div>`).join('')}</div>` : ''}
+      </div>`;
+  }
+  const urunler = `<div class="kart"><div class="kart-bas"><h2>Ürünler</h2><span class="kucuk">${teklifNo(q.no)} · ${tarih(q.createdAt)}</span></div>
+      <div>${q.items.map(i => `<div class="kalem">${resim(i.photoId, 'kucuk-resim')}<div class="kalem-ana"><strong>${esc(i.name)}</strong><span class="kucuk">${esc([i.variant, i.qty > 1 ? i.qty + ' adet × ' + para(i.price) : ''].filter(Boolean).join(' · '))}</span></div><span class="tutar">${para(i.price * i.qty)}</span></div>`).join('')}</div>
+      <div class="toplamlar"><div><span>Ara toplam</span><span>${para(q.subtotal)}</span></div>${q.discount ? `<div><span>İndirim</span><span>− ${para(q.discount)}</span></div>` : ''}<div class="genel"><span>Toplam</span><span>${para(q.total)}</span></div></div>
+      ${q.status === 'acik' && q.validUntil ? `<p class="kucuk">${q.validUntil < gunStr() ? 'Geçerlilik süresi ' + tarih(q.validUntil) + ' günü doldu.' : tarih(q.validUntil) + ' gününe kadar geçerli.'}</p>` : ''}
+    </div>`;
+  const notlar = (q.note || (satis && q.internalNote)) ? `<div class="kart"><h2>Notlar</h2>${q.note ? `<div><span class="etiket">Müşteriye not</span><p>${esc(q.note)}</p></div>` : ''}${satis && q.internalNote ? `<div><span class="etiket">Mağaza içi</span><p>${esc(q.internalNote)}</p></div>` : ''}</div>` : '';
+  const gecmis = satis && (q.log || []).length ? `<div class="kart"><h2>Geçmiş</h2><div class="gecmis">${q.log.slice().sort((x, y) => y.at - x.at).map(l => `<div>${esc(l.text)}<small>${saatli(l.at)} · ${esc(l.by || '')}</small></div>`).join('')}</div></div>` : '';
+  const alt = satis ? `<div class="dugmeler"><a class="btn ikincil" href="#duzenle-${esc(id)}">${ik('kalem', 20)} Teklifi düzenle</a>${rol === 'sahip' ? `<button class="btn tehlike" data-is="sil-ac" data-id="${esc(id)}">${ik('cop', 20)} Sil</button>` : ''}</div>` : '';
+  return `<button class="geri" data-is="geri">${ik('geri', 20)} Geri</button>
+    <div class="iki"><div class="bolum" style="gap:18px">${musteri}${orta}</div><div class="bolum" style="gap:18px">${urunler}${notlar}${gecmis}${alt}</div></div>`;
+}
+
+/* ---------------- Siparişler ---------------- */
+function siparislerG() {
+  const hepsi = D.quotes.filter(q => q.status === 'kazanildi');
+  const say = k => hepsi.filter(q => k === 'aktif' ? (q.order || {}).stage !== 'teslim' : ((q.order || {}).stage || 'siparis') === k).length;
+  const l = hepsi.filter(q => A.sipFiltre === 'aktif' ? (q.order || {}).stage !== 'teslim' : ((q.order || {}).stage || 'siparis') === A.sipFiltre)
+    .sort((x, y) => ((x.order || {}).deliveryDate || '9999').localeCompare((y.order || {}).deliveryDate || '9999') || y.wonAt - x.wonAt);
+  const sekme = (k, ad) => `<button class="sekme ${A.sipFiltre === k ? 'secili' : ''}" data-is="sip-filtre" data-k="${k}">${ad}<span class="adet">${say(k)}</span></button>`;
+  return `${sayfaBas('Siparişler')}
+    <div class="sekmeler">${sekme('aktif', 'Devam eden')}${ASAMALAR.map(a => sekme(a[0], a[1])).join('')}</div>
+    ${liste(l.map(q => { const o = q.order || {}; return teklifSatir(q, [ozet(q), o.deliveryDate ? 'teslimat ' + yakin(o.deliveryDate).toLocaleLowerCase('tr') : 'teslimat günü yok', kalan(q) ? 'kalan ' + para(kalan(q)) : 'ödeme tamam'].join(' · ')); }), 'Bu aşamada sipariş yok.')}`;
+}
+
+/* ---------------- Teslimat takvimi ---------------- */
+function teslimatKart(q) {
+  const o = q.order || {}, tel = q.customer.phone, k = kalan(q);
+  return `<div class="kart">
+    <div class="kart-bas"><div><h3 style="font-size:18px">${esc(q.customer.name)}</h3><span class="kucuk">${esc(ozet(q))}</span></div><span class="rozet ${durum(q).ton}">${asamaAd(o.stage)}</span></div>
+    ${o.slot ? `<div class="bilgi-satir">${ik('saat', 20)}<span>${esc(o.slot)}</span></div>` : ''}
+    <div class="bilgi-satir">${ik('konum', 20)}<span>${o.address ? esc(o.address) : 'Adres girilmedi'}</span></div>
+    ${tel ? `<div class="bilgi-satir">${ik('tel', 20)}<span class="sec sayi">${esc(tel)}</span></div>` : ''}
+    ${o.note ? `<div class="bilgi-satir">${ik('belge', 20)}<span>${esc(o.note)}</span></div>` : ''}
+    <div class="bilgi-satir">${ik('kutu', 20)}<span>${k ? `<strong style="color:var(--kirmizi)">Teslimatta alınacak: ${para(k)}</strong>` : 'Ödeme tamam'}${o.team ? ' · ' + esc(o.team) : ''}</span></div>
+    <div class="dugmeler">
+      ${tel ? `<a class="btn ikincil" href="tel:${esc('+' + telNo(tel))}">${ik('tel', 20)} Ara</a>` : ''}
+      ${o.address ? `<a class="btn ikincil" href="${haritaLink(o.address)}" target="_blank" rel="noopener">${ik('konum', 20)} Yol tarifi</a>` : ''}
+      <a class="btn ikincil" href="#teklif-${esc(q.id)}">Detay</a>
+      <button class="btn" style="flex-basis:100%" data-is="teslim-et" data-id="${esc(q.id)}">${ik('tik', 20)} Teslim edildi</button>
+    </div></div>`;
+}
+function teslimatG() {
+  const b = gunStr();
+  const aktif = D.quotes.filter(q => q.status === 'kazanildi' && (q.order || {}).stage !== 'teslim');
+  const tarihli = aktif.filter(q => q.order.deliveryDate).sort((x, y) => x.order.deliveryDate.localeCompare(y.order.deliveryDate) || String(x.order.slot || '').localeCompare(String(y.order.slot || '')));
+  const tarihsiz = aktif.filter(q => !q.order.deliveryDate);
+  const gunler = []; tarihli.forEach(q => { const g = q.order.deliveryDate; let s = gunler.find(x => x.g === g); if (!s) gunler.push(s = { g, l: [] }); s.l.push(q); });
+  return `${sayfaBas('Teslimat takvimi')}
+    ${gunler.length ? gunler.map(s => `<section class="bolum"><div class="gun-bas"><h2>${[gunStr(), gunEkle(1), gunEkle(-1)].includes(s.g) ? yakin(s.g) : tarih(s.g, true)}</h2><span class="kucuk">${[gunStr(), gunEkle(1), gunEkle(-1)].includes(s.g) ? tarih(s.g, true) + ' · ' : ''}${s.l.length} teslimat</span>${s.g < b ? '<span class="rozet kirmizi">Günü geçti</span>' : ''}</div>${s.l.map(teslimatKart).join('')}</section>`).join('') : '<div class="bos">Planlanmış teslimat yok.</div>'}
+    ${tarihsiz.length ? `<section class="bolum"><div class="gun-bas"><h2>Teslimat günü bekleyenler</h2><span class="kucuk">${tarihsiz.length} sipariş</span></div>
+      ${liste(tarihsiz.map(q => teklifSatir(q, [ozet(q), 'gün belirlemek için açın'].join(' · '))), '')}</section>` : ''}`;
+}
+
+/* ---------------- Ürünler ---------------- */
+function urunListeHtml() {
+  const ara = A.urunAra.trim().toLocaleLowerCase('tr');
+  const l = D.products.filter(p => !ara || p.name.toLocaleLowerCase('tr').includes(ara)).sort((x, y) => x.name.localeCompare(y.name, 'tr'));
+  return liste(l.map(p => `<button class="satir" data-is="urun-ac" data-id="${esc(p.id)}">${p.thumb ? `<img class="kucuk-resim" src="${p.thumb}" alt="">` : resim('', 'kucuk-resim')}<span class="satir-ana"><strong>${esc(p.name)}</strong></span><span class="tutar">${para(p.price)}</span></button>`), D.products.length ? 'Eşleşen ürün yok.' : 'Henüz ürün yok. Teklif verirken eklediğiniz ürünler burada birikir.');
+}
+function urunlerG() {
+  return `${sayfaBas('Ürünler', `<button class="btn kucuk-b" data-is="urun-ac" data-id="">${ik('arti', 18)} Ürün ekle</button>`)}
+    <label class="arama">${ik('ara', 20)}<input class="giris" id="ara" type="search" data-in="urun-ara" value="${esc(A.urunAra)}" placeholder="Ürün ara" aria-label="Ürünlerde ara"></label>
+    <div id="liste-kap">${urunListeHtml()}</div>`;
+}
+function urunModalHtml() {
+  const u = A.urun;
+  const gorsel = u.fotoVeri ? `<img src="${u.fotoVeri}" alt="">` : u.photoId ? `<img src="${BOS_GORSEL}" data-foto="${esc(u.photoId)}" alt="">` : `${ik('kamera', 34)}<span>Fotoğraf çek ya da seç</span>`;
+  return modalBas(u.id ? 'Ürünü düzenle' : 'Yeni ürün') + `<form data-form="urun" class="bolum" style="gap:14px">
+    <label class="foto-al">${gorsel}<input type="file" accept="image/*" data-dosya="urun" aria-label="Ürün fotoğrafı"></label>
+    <label class="alan"><span>Ürün adı</span><input class="giris" id="ur-ad" name="name" required value="${esc(u.name)}"></label>
+    <label class="alan"><span>Fiyat (₺)</span><input class="giris" id="ur-fiyat" name="price" required inputmode="decimal" value="${esc(u.price)}"></label>
+    <div class="dugmeler">${u.id ? '<button class="btn tehlike" type="button" data-is="urun-sil">Sil</button>' : ''}<button class="btn buyuk" type="submit">Kaydet</button></div></form>`;
+}
+
+/* ---------------- Rapor ---------------- */
+function aralik(k) {
+  const s = new Date(); s.setHours(0, 0, 0, 0);
+  if (k === 'gecen') return [new Date(s.getFullYear(), s.getMonth() - 1, 1).getTime(), new Date(s.getFullYear(), s.getMonth(), 1).getTime()];
+  if (k === '90') return [Date.now() - 90 * GUN, Infinity];
+  s.setDate(1); return [s.getTime(), Infinity];
+}
+function raporG() {
+  const [t0, t1] = aralik(A.rapor);
+  const ic = t => t >= t0 && t < t1;
+  const verilen = D.quotes.filter(q => ic(q.createdAt));
+  const donen = D.quotes.filter(q => q.status === 'kazanildi' && ic(q.wonAt));
+  const ciro = donen.reduce((t, q) => t + q.total, 0);
+  const tahsil = D.quotes.reduce((t, q) => t + ((q.order && q.order.payments) || []).filter(p => ic(p.at)).reduce((a, p) => a + (+p.amount || 0), 0), 0);
+  const acik = D.quotes.filter(q => q.status === 'acik');
+  const bakiye = D.quotes.filter(q => q.status === 'kazanildi').reduce((t, q) => t + kalan(q), 0);
+  const kisiler = {};
+  verilen.forEach(q => { const k = kisiler[q.createdByName] = kisiler[q.createdByName] || { ad: q.createdByName, teklif: 0, siparis: 0, ciro: 0 }; k.teklif++; if (q.status === 'kazanildi') { k.siparis++; k.ciro += q.total; } });
+  const kl = Object.values(kisiler).sort((x, y) => y.ciro - x.ciro || y.teklif - x.teklif);
+  const enCok = Math.max(1, ...kl.map(k => k.ciro));
+  const nedenler = {}; verilen.filter(q => q.status === 'kaybedildi').forEach(q => { const n = q.lostReason || 'Belirtilmedi'; nedenler[n] = (nedenler[n] || 0) + 1; });
+  const nl = Object.entries(nedenler).sort((x, y) => y[1] - x[1]);
+  const kazanilanVerilen = verilen.filter(q => q.status === 'kazanildi').length;
+  const sekme = (k, ad) => `<button class="sekme ${A.rapor === k ? 'secili' : ''}" data-is="rapor-aralik" data-k="${k}">${ad}</button>`;
+  return `${sayfaBas('Rapor', `<button class="btn ikincil kucuk-b" data-is="csv">${ik('indir', 18)} Excel'e aktar</button>`)}
+    <div class="sekmeler">${sekme('ay', 'Bu ay')}${sekme('gecen', 'Geçen ay')}${sekme('90', 'Son 90 gün')}</div>
+    <div class="rakamlar">
+      <div class="rakam"><b>${verilen.length}</b><span>verilen teklif</span></div>
+      <div class="rakam"><b>${donen.length}</b><span>siparişe dönen</span></div>
+      <div class="rakam"><b>${verilen.length ? '%' + Math.round(kazanilanVerilen / verilen.length * 100) : '–'}</b><span>kapanma oranı</span></div>
+      <div class="rakam"><b>${para(ciro)}</b><span>sipariş cirosu</span></div>
+      <div class="rakam"><b>${para(tahsil)}</b><span>tahsil edilen</span></div>
+      <div class="rakam"><b>${para(bakiye)}</b><span>bekleyen bakiye (şu an)</span></div>
+      <div class="rakam"><b>${acik.length}</b><span>açık teklif (şu an)</span></div>
+      <div class="rakam"><b>${para(acik.reduce((t, q) => t + q.total, 0))}</b><span>açık teklif tutarı</span></div>
+    </div>
+    <div class="iki">
+      <div class="kart"><h2>Satış danışmanları</h2>
+        ${kl.length ? kl.map(k => `<div class="cubuk-satir"><strong>${esc(k.ad)}</strong><span class="sayi">${para(k.ciro)}</span><span class="kucuk">${k.teklif} teklif · ${k.siparis} sipariş · %${k.teklif ? Math.round(k.siparis / k.teklif * 100) : 0} kapanma</span><span></span><div class="cubuk"><i style="width:${Math.round(k.ciro / enCok * 100)}%"></i></div></div>`).join('') : '<p class="kucuk">Bu dönemde teklif verilmedi.</p>'}
+      </div>
+      <div class="kart"><h2>Neden kaybettik?</h2>
+        ${nl.length ? nl.map(([n, a]) => `<div class="cubuk-satir"><span>${esc(n)}</span><span class="sayi">${a}</span></div>`).join('') : '<p class="kucuk">Bu dönemde kaybedilen teklif yok.</p>'}
+      </div>
+    </div>`;
+}
+
+/* ---------------- Ayarlar ---------------- */
+function ayarlarG() {
+  const u = D.ot.user, st = D.store, sahip = u.role === 'sahip';
+  const hesap_ = `<div class="kart"><h2>Hesabım</h2>
+      <form data-form="hesap" class="alanlar"><label class="alan"><span>Adınız soyadınız</span><input class="giris" id="h-ad" name="name" required value="${esc(u.name)}"></label>
+      <p class="kucuk">${esc(u.email)} · ${ROL[u.role]}</p>
+      <div class="dugmeler"><button class="btn ikincil" type="submit">Adı kaydet</button>${B.mod === 'canli' ? '<button class="btn ikincil" type="button" data-is="sifre-posta">Şifre değiştirme e-postası gönder</button>' : ''}<button class="btn tehlike" type="button" data-is="cikis">${ik('cikis', 20)} Çıkış yap</button></div></form></div>`;
+  if (!sahip) return `${sayfaBas('Hesap')}${hesap_}`;
+  const plan = PLAN[st.plan] || PLAN.deneme;
+  const aktifKisi = D.users.filter(x => x.active !== false).length;
+  return `${sayfaBas('Ayarlar')}
+    <div class="kart"><h2>Mağaza bilgileri</h2><p class="kucuk">Müşterinin gördüğü teklif sayfasında bu bilgiler yer alır.</p>
+      <form data-form="magaza" class="alanlar">
+        <div class="alanlar cift">
+          <label class="alan"><span>Mağaza adı</span><input class="giris" id="m-ad" name="name" required value="${esc(st.name)}"></label>
+          <label class="alan"><span>Telefon</span><input class="giris" id="m-tel" name="phone" type="tel" value="${esc(st.phone)}"></label>
+          <label class="alan"><span>WhatsApp hattı</span><input class="giris" id="m-wa" name="whatsapp" type="tel" value="${esc(st.whatsapp || '')}" placeholder="05xx xxx xx xx"><small>Müşteri teklif sayfasından bu numaraya yazar.</small></label>
+          <label class="alan"><span>Adres</span><input class="giris" id="m-adres" name="address" value="${esc(st.address)}"></label>
+        </div>
+        <div class="alan"><span>Logo</span><div class="dugmeler" style="align-items:center">${st.logo ? `<img src="${st.logo}" alt="Logo" class="m-logo">` : ''}<label class="btn ikincil" style="position:relative;flex:0 1 auto">${ik('kamera', 20)} ${st.logo ? 'Logoyu değiştir' : 'Logo yükle'}<input type="file" accept="image/*" data-dosya="logo" style="position:absolute;inset:0;opacity:0;width:100%;cursor:pointer" aria-label="Logo dosyası"></label></div></div>
+        <div class="dugmeler"><button class="btn" type="submit" style="flex:0 1 220px">Kaydet</button></div>
+      </form></div>
+    <div class="kart"><h2>Teklif ayarları</h2>
+      <form data-form="teklif-ayar" class="alanlar">
+        <div class="alanlar cift">
+          <label class="alan"><span>Teklif kaç gün geçerli?</span><input class="giris" id="a-gecerli" name="validDays" inputmode="numeric" value="${esc(st.validDays || 7)}"></label>
+          <label class="alan"><span>Müşteri kaç gün sonra aransın?</span><input class="giris" id="a-takip" name="followDays" inputmode="numeric" value="${esc(st.followDays || 3)}"></label>
+        </div>
+        <label class="alan"><span>Satış şartları</span><textarea class="giris" id="a-sart" name="terms" rows="4">${esc(st.terms || '')}</textarea><small>Her teklifin altında görünür.</small></label>
+        <label class="alan"><span>WhatsApp teklif mesajı</span><textarea class="giris" id="a-mesaj" name="msgQuote" rows="6">${esc(st.msgQuote || VARS_MESAJ)}</textarea><small>{ad}, {magaza}, {link}, {toplam} ve {gecerlilik} yazan yerler otomatik dolar.</small></label>
+        <label class="alan"><span>KVKK aydınlatma metni</span><textarea class="giris" id="a-kvkk" name="kvkk" rows="4">${esc(st.kvkk || '')}</textarea><small>Teklif sayfasının altında müşteriye gösterilir.</small></label>
+        <div class="dugmeler"><button class="btn" type="submit" style="flex:0 1 220px">Kaydet</button></div>
+      </form></div>
+    <div class="kart"><div class="kart-bas"><h2>Ekip</h2><button class="btn kucuk-b" data-is="personel-ac">${ik('arti', 18)} Kişi ekle</button></div>
+      <p class="kucuk">${aktifKisi} / ${plan.kisi} kullanıcı. Satış danışmanı yalnızca kendi tekliflerini, teslimat ekibi yalnızca siparişleri görür.</p>
+      <div>${D.users.slice().sort((x, y) => (x.createdAt || 0) - (y.createdAt || 0)).map(k => `<div class="kalem"><div class="kalem-ana"><strong>${esc(k.name)}${k.active === false ? ' <span class="rozet">Kapalı</span>' : ''}</strong><span class="kucuk">${esc(k.email)}</span></div>
+        ${k.role === 'sahip' ? `<span class="rozet yesil">${ROL.sahip}</span>` : `<select class="giris" style="width:auto;min-height:44px" data-degis="rol" data-uid="${esc(k.uid)}" aria-label="${esc(k.name)} rolü"><option value="danisman" ${k.role === 'danisman' ? 'selected' : ''}>${ROL.danisman}</option><option value="teslimat" ${k.role === 'teslimat' ? 'selected' : ''}>${ROL.teslimat}</option></select>
+        <button class="btn ikincil kucuk-b" data-is="personel-durum" data-uid="${esc(k.uid)}">${k.active === false ? 'Aç' : 'Kapat'}</button>`}</div>`).join('')}</div>
+    </div>
+    <div class="kart"><h2>Abonelik</h2>
+      <div class="toplamlar"><div><span>Paket</span><strong>${plan.ad}</strong></div><div><span>Bitiş</span><strong>${B.mod === 'deneme' ? 'Deneme modu' : tarih(st.paidUntil)}</strong></div><div><span>Kullanıcı hakkı</span><strong>${plan.kisi} kişi</strong></div></div>
+      ${AYAR.destekWhatsapp ? `<a class="btn yumusak" href="${waLink(AYAR.destekWhatsapp, st.name + ' için abonelik hakkında yazıyorum.')}" target="_blank" rel="noopener">${ik('wa', 20)} Paket için bize yazın</a>` : ''}
+    </div>
+    ${hesap_}`;
+}
+function menuG() {
+  const rol = D.ot.user.role;
+  const o = [['teslimat', 'Teslimat takvimi', 'kamyon'], ['urunler', 'Ürünler', 'koltuk']];
+  if (rol === 'sahip') o.push(['rapor', 'Rapor', 'grafik']);
+  o.push(['ayarlar', rol === 'sahip' ? 'Ayarlar' : 'Hesap', 'ayar']);
+  if (D.ot.admin) o.push(['yonetim', 'Yönetim', 'kisi']);
+  return `${sayfaBas('Menü')}<div class="liste">${o.map(x => `<a class="satir" href="#${x[0]}">${ik(x[2], 24)}<span class="satir-ana"><strong>${x[1]}</strong></span>${ik('ileri', 20)}</a>`).join('')}</div>
+    <p class="kucuk">${esc(D.store.name)} · ${esc(D.ot.user.name)} · ${ROL[rol]}</p>`;
+}
+
+/* ---------------- Yönetim (abonelikleri yöneten kişi) ---------------- */
+function yonetimG() {
+  if (!D.ot.admin) return '<div class="bos">Bu bölüm için yetkiniz yok.</div>';
+  if (A.magazalar === null) { A.magazalar = 'bekle'; B.adminStores().then(l => { A.magazalar = l; ciz(); }).catch(e => { A.magazalar = []; hataGoster(e); ciz(); }); }
+  if (A.magazalar === 'bekle') return `${sayfaBas('Mağazalar')}${bekle('Yükleniyor…')}`;
+  const l = A.magazalar.slice().sort((x, y) => (y.createdAt || 0) - (x.createdAt || 0));
+  const aktif = l.filter(m => m.paidUntil > Date.now() && m.plan !== 'deneme').length;
+  return `${sayfaBas('Mağazalar', D.ot.user ? '' : '<button class="btn ikincil kucuk-b" data-is="cikis">Çıkış yap</button>')}
+    <div class="rakamlar"><div class="rakam"><b>${l.length}</b><span>kayıtlı mağaza</span></div><div class="rakam"><b>${aktif}</b><span>ücretli abone</span></div><div class="rakam"><b>${l.filter(m => m.plan === 'deneme' && m.paidUntil > Date.now()).length}</b><span>denemede</span></div><div class="rakam"><b>${l.filter(m => m.paidUntil <= Date.now()).length}</b><span>süresi dolmuş</span></div></div>
+    ${l.length ? l.map(m => { const g = Math.ceil((m.paidUntil - Date.now()) / GUN); return `<div class="kart">
+      <div class="kart-bas"><div><h3 style="font-size:18px">${esc(m.name)}</h3><span class="kucuk">${esc(m.ownerName || '')} · ${esc(m.ownerEmail || '')} · <span class="sec">${esc(m.phone || '')}</span></span></div><span class="rozet ${g <= 0 ? 'kirmizi' : m.plan === 'deneme' ? 'amber' : 'yesil'}">${g <= 0 ? 'Süresi doldu' : (PLAN[m.plan] || PLAN.deneme).ad + ' · ' + g + ' gün'}</span></div>
+      <p class="kucuk">Kayıt ${tarih(m.createdAt)} · bitiş ${tarih(m.paidUntil)}</p>
+      <div class="dugmeler" style="align-items:center">
+        <select class="giris" style="flex:1 1 160px" data-degis="plan" data-id="${esc(m.id)}" aria-label="${esc(m.name)} paketi">${Object.keys(PLAN).map(p => `<option value="${p}" ${m.plan === p ? 'selected' : ''}>${PLAN[p].ad}</option>`).join('')}</select>
+        <button class="btn ikincil" data-is="sure-ekle" data-id="${esc(m.id)}" data-gun="30">+30 gün</button>
+        <button class="btn ikincil" data-is="sure-ekle" data-id="${esc(m.id)}" data-gun="365">+1 yıl</button>
+        <button class="btn tehlike" data-is="sure-ekle" data-id="${esc(m.id)}" data-gun="0">Durdur</button>
+      </div></div>`; }).join('') : '<div class="bos">Henüz kayıtlı mağaza yok.</div>'}`;
+}
+
+/* ---------------- Müşterinin gördüğü teklif sayfası ---------------- */
+function musteriSayfa(id) {
+  let p = null, onizleme = false;
+  const q = D.ot && D.ot.user ? D.quotes.find(x => x.id === id) : null;
+  if (q && D.store) { p = herkeseAcik(q); onizleme = true; }
+  else {
+    if (A.pub[id] === undefined) { A.pub[id] = 'bekle'; B.getPublic(id).then(v => { A.pub[id] = v || null; ciz(); }).catch(() => { A.pub[id] = null; ciz(); }); }
+    if (A.pub[id] === 'bekle') return bekle('Teklif yükleniyor…');
+    p = A.pub[id];
+    onizleme = !!(D.ot && D.ot.user);
+  }
+  const cubuk = onizleme ? `<div class="m-onizleme"><span>Müşteri bu sayfayı görüyor</span><button class="baglanti" style="color:inherit" data-is="geri">Geri dön</button></div>` : '';
+  if (!p) return `${cubuk}<div class="m-sayfa"><div class="bos">Bu teklif bulunamadı. Bağlantı eksik kopyalanmış ya da teklif kaldırılmış olabilir.</div></div>`;
+  const st = p.store || {};
+  document.title = (st.name || AYAR.uygulamaAdi) + ' – Teklif';
+  const logo = st.logo ? `<img class="m-logo" src="${st.logo}" alt="">` : `<div class="m-logo harf">${esc((st.name || '?').trim().charAt(0).toLocaleUpperCase('tr'))}</div>`;
+  const siparis = p.status === 'kazanildi' && p.order;
+  const doldu = !siparis && p.validUntil && p.validUntil < gunStr();
+  const sira = siparis ? asamaSira(p.order.stage) : -1;
+  const wa = st.whatsapp || '';
+  return `${cubuk}<div class="m-sayfa">
+    <header class="m-bas">${logo}<div><h2>${esc(st.name)}</h2><span class="kucuk">${esc(st.address || '')}</span></div></header>
+    <div><span class="etiket">${siparis ? 'Sipariş' : 'Teklif'} ${teklifNo(p.no)}</span><h1>Sayın ${esc(p.customerName)}</h1>
+      <p class="kucuk">${tarih(p.createdAt)} tarihinde ${esc(p.seller)} tarafından hazırlandı.${!siparis && p.validUntil ? (doldu ? ' Teklifin süresi ' + tarih(p.validUntil) + ' günü doldu; güncel fiyat için bize yazın.' : ' ' + tarih(p.validUntil) + ' gününe kadar geçerlidir.') : ''}</p></div>
+    ${siparis ? `<div class="kart"><h2>Siparişiniz ne durumda?</h2>
+      <div class="asamalar">${ASAMALAR.map((a, n) => `<div class="asama ${n < sira ? 'gecti' : ''} ${n === sira ? 'gecti simdi' : ''}"><span class="nokta">${n <= sira ? ik('tik', 16) : ''}</span>${a[1]}</div>`).join('')}</div>
+      ${p.order.deliveryDate && p.order.stage !== 'teslim' ? `<div class="bilgi-satir">${ik('takvim', 20)}<span>Planlanan teslimat: <strong>${tarih(p.order.deliveryDate, true)}</strong>${p.order.slot ? ' · ' + esc(p.order.slot) : ''}</span></div>` : ''}
+    </div>` : ''}
+    <div class="m-urunler">${p.items.map(i => `<article class="m-urun"><div class="gorsel">${i.photoId ? `<img src="${BOS_GORSEL}" data-foto="${esc(i.photoId)}" alt="${esc(i.name)}">` : ik('koltuk', 44)}</div><div class="govde"><h3>${esc(i.name)}</h3>${i.variant ? `<span class="kucuk">${esc(i.variant)}</span>` : ''}<div class="fiyat"><span class="kucuk">${i.qty > 1 ? i.qty + ' adet × ' + para(i.price) : '1 adet'}</span><strong class="tutar">${para(i.price * i.qty)}</strong></div></div></article>`).join('')}</div>
+    <div class="kart"><div class="toplamlar"><div><span>Ara toplam</span><span>${para(p.ara)}</span></div>${p.ind ? `<div><span>Size özel indirim</span><span>− ${para(p.ind)}</span></div>` : ''}<div class="genel"><span>Toplam</span><span>${para(p.toplam)}</span></div>
+      ${siparis ? `<div><span>Ödenen</span><span>${para(p.order.paid)}</span></div><div><span>Kalan</span><strong>${para(Math.max(0, p.toplam - p.order.paid))}</strong></div>` : ''}</div></div>
+    ${p.note ? `<div class="kart"><h2>Size notumuz</h2><p class="m-metin" style="color:var(--murekkep)">${esc(p.note)}</p></div>` : ''}
+    <div class="kart vurgu"><h2>Sorunuz mu var?</h2>
+      ${wa ? `<div class="dugmeler"><a class="btn buyuk" href="${waLink(wa, teklifNo(p.no) + ' numaralı ' + (siparis ? 'siparişim' : 'teklif') + ' hakkında yazıyorum.')}" target="_blank" rel="noopener">${ik('wa')} WhatsApp'tan yazın</a></div>` : ''}
+      ${st.phone ? `<div class="bilgi-satir">${ik('tel', 20)}<span>Telefon: <strong class="sec sayi">${esc(st.phone)}</strong></span></div>` : ''}
+    </div>
+    ${p.terms ? `<div><span class="etiket">Satış şartları</span><p class="m-metin">${esc(p.terms)}</p></div>` : ''}
+    ${p.kvkk ? `<details class="m-acilir"><summary>Kişisel verileriniz hakkında</summary><p class="m-metin">${esc(p.kvkk)}</p></details>` : ''}
+    <p class="m-alt">Bu sayfa ${esc(AYAR.uygulamaAdi)} ile hazırlandı.</p>
+  </div>`;
+}
+
+/* ============================================================
+   İşlemler: tıklamalar, formlar, başlangıç
+   ============================================================ */
+async function guncelle(id, deg, mesaj) {
+  const q = D.quotes.find(x => x.id === id); if (!q) return false;
+  if (!aktifMi()) { toast('Abonelik süresi doldu. Değişiklik için aboneliği yenileyin.', true); return false; }
+  deg.set = Object.assign({ updatedAt: Date.now() }, deg.set || {});
+  const yeni = degisiklikUygula(q, deg);
+  await B.updateQuote(id, deg, herkeseAcik(yeni));
+  if (mesaj) toast(mesaj);
+  return true;
+}
+function kalemAc(idx) {
+  A.kalemIdx = idx; A.kalemAra = '';
+  if (idx >= 0) { const i = A.taslak.items[idx]; A.kalem = { name: i.name, variant: i.variant || '', qty: +i.qty || 1, price: String(i.price || ''), photoId: i.photoId || '', productId: i.productId || '', fotoVeri: '', kucuk: '', kaydet: false }; A.kalemAdim = 'form'; }
+  else { A.kalem = { name: '', variant: '', qty: 1, price: '', photoId: '', productId: '', fotoVeri: '', kucuk: '', kaydet: true }; A.kalemAdim = D.products.length ? 'liste' : 'form'; }
+  modalAc(kalemModalHtml());
+}
+async function teklifKaydet(btn) {
+  const t = A.taslak; if (!t) return;
+  const ad = (t.customer.name || '').trim();
+  if (!ad) { toast('Müşterinin adını yazın.', true); const a = $('#t-ad'); if (a) a.focus(); return; }
+  if (!t.items.length) { toast('En az bir ürün ekleyin.', true); return; }
+  if (!aktifMi()) { toast('Abonelik süresi doldu. Yeni teklif için aboneliği yenileyin.', true); return; }
+  mesgul(btn, true);
+  try {
+    const h = hesap(t), simdi = Date.now(), u = D.ot.user;
+    const alanlar = {
+      customer: { name: ad, phone: (t.customer.phone || '').trim() },
+      items: t.items.map(i => ({ name: i.name, variant: i.variant || '', qty: +i.qty || 1, price: +i.price || 0, photoId: i.photoId || '', productId: i.productId || '' })),
+      discountType: t.discountType === 'yuzde' ? 'yuzde' : 'tl', discountVal: sayi(t.discountVal),
+      subtotal: h.ara, discount: h.ind, total: h.toplam, note: (t.note || '').trim(), internalNote: (t.internalNote || '').trim(),
+      validUntil: t.validUntil || '', followUpAt: t.followUpAt || '', updatedAt: simdi
+    };
+    let id = t.id, q;
+    if (id) {
+      const eski = D.quotes.find(x => x.id === id); if (!eski) throw new Error('Teklif bulunamadı');
+      q = Object.assign(kopya(eski), alanlar);
+      q.log = (q.log || []).concat([kayit('Teklif düzenlendi')]);
+    } else {
+      id = B.newId();
+      q = Object.assign({ no: await B.nextNo(), status: 'acik', lostReason: '', createdBy: D.ot.uid, createdByName: u.name, createdAt: simdi, sentAt: 0, wonAt: 0, log: [kayit('Teklif oluşturuldu')], order: null }, alanlar);
+    }
+    delete q.id; delete q._pub;
+    await B.setQuote(id, q, herkeseAcik(Object.assign({ id }, q)));
+    A.taslak = null; A.taslakId = undefined;
+    toast(t.id ? 'Değişiklikler kaydedildi' : 'Teklif kaydedildi. Şimdi müşteriye gönderin.');
+    if (t.id && yigin.length > 1 && yigin[yigin.length - 2] === '#teklif-' + id) history.back();
+    else git('teklif-' + id, true);
+  } finally { mesgul(btn, false); }
+}
+function csvIndir() {
+  const b = ['No', 'Tarih', 'Müşteri', 'Telefon', 'Danışman', 'Durum', 'Ürünler', 'Toplam', 'Alınan', 'Kalan', 'Teslimat'];
+  const h = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+  const s = D.quotes.slice().sort((x, y) => y.createdAt - x.createdAt).map(q => [teklifNo(q.no), gunStr(new Date(q.createdAt)), q.customer.name, q.customer.phone, q.createdByName, durum(q).etiket, q.items.map(i => i.name).join(', '), q.total, q.status === 'kazanildi' ? odenen(q) : '', q.status === 'kazanildi' ? kalan(q) : '', (q.order && q.order.deliveryDate) || ''].map(h).join(';'));
+  const blob = new Blob(['﻿' + [b.map(h).join(';')].concat(s).join('\r\n')], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'teklifler-' + gunStr() + '.csv';
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  toast('Dosya hazırlandı');
+}
+
+/* Tarayıcı geçmişi yerine kendi yığınımız: sayfa yenilendiğinde ya da gömülü açıldığında "Geri" uygulamadan çıkarmaz */
+const yigin = [location.hash];
+let yerineYaz = false;
+function geriGit() {
+  if (yigin.length > 1) { history.back(); return; }
+  const r = rotaOku(), q = D.quotes.find(x => x.id === r.id);
+  const rol = D.ot && D.ot.user ? D.ot.user.role : '';
+  git(rol === 'teslimat' && r.ad !== 't' ? 'teslimat' : ((r.ad === 'duzenle' || r.ad === 't') && q ? 'teklif-' + r.id : (q && q.status === 'kazanildi' ? 'siparisler' : 'teklifler')), true);
+}
+function git(hash, degistir) {
+  if (degistir) { yerineYaz = true; location.replace('#' + hash); }
+  else location.hash = hash;
+}
+
+const ISLER = {
+  'modal-kapat': () => modalKapat(),
+  geri: () => geriGit(),
+  vazgec: () => { A.taslak = null; A.taslakId = undefined; geriGit(); },
+  cikis: async () => { A.magazalar = null; await B.signOut(); location.hash = ''; },
+  'giris-mod': el => { A.girisMod = el.dataset.mod; ciz(); },
+  'demo-rol': el => { A.taslak = null; A.taslakId = undefined; B.demoRol(el.dataset.uid); location.hash = ''; },
+  'demo-sifirla': () => { A.taslak = null; A.taslakId = undefined; fotoBellek.clear(); B.demoSifirla(); location.hash = ''; toast('Örnek veriler yenilendi'); },
+  filtre: el => { A.filtre = el.dataset.k; ciz(); },
+  'sip-filtre': el => { A.sipFiltre = el.dataset.k; ciz(); },
+  'rapor-aralik': el => { A.rapor = el.dataset.k; ciz(); },
+  csv: () => csvIndir(),
+  cip: el => {
+    const g = el.closest('.cipler'); $$('.cip', g).forEach(c => c.classList.toggle('secili', c === el));
+    const hedef = el.dataset.hedef && document.getElementById(el.dataset.hedef); if (hedef) hedef.value = el.dataset.deger;
+  },
+
+  /* teklif formu */
+  'kalem-yeni': () => kalemAc(-1),
+  'kalem-duzenle': el => kalemAc(+el.dataset.n),
+  'kalem-bos': () => { A.kalemAdim = 'form'; modalAc(kalemModalHtml()); },
+  'kalem-sec': el => { const p = D.products.find(x => x.id === el.dataset.id); if (!p) return; Object.assign(A.kalem, { name: p.name, price: String(p.price || ''), photoId: p.photoId || '', productId: p.id, kaydet: false }); A.kalemAdim = 'form'; modalAc(kalemModalHtml()); },
+  'kalem-adet': el => { A.kalem.qty = Math.max(1, (+A.kalem.qty || 1) + (+el.dataset.d)); $('#kl-adet').textContent = A.kalem.qty; },
+  'kalem-sil': () => { A.taslak.items.splice(A.kalemIdx, 1); modalKapat(); ciz(); },
+  'kalem-tamam': async el => {
+    const k = A.kalem, ad = (k.name || '').trim(), fiyat = sayi(k.price);
+    if (!ad) { toast('Ürün adını yazın.', true); return; }
+    if (!(fiyat > 0)) { toast('Ürünün fiyatını yazın.', true); return; }
+    mesgul(el, true);
+    try {
+      let photoId = k.photoId || '';
+      if (k.fotoVeri) { photoId = await B.putPhoto(k.fotoVeri); fotoBellek.set(photoId, k.fotoVeri); }
+      let productId = k.productId || '';
+      if (k.kaydet && !productId) { productId = B.newId(); await B.setProduct(productId, { name: ad, price: fiyat, photoId, thumb: k.kucuk || '', createdAt: Date.now() }); }
+      const kalem = { name: ad, variant: (k.variant || '').trim(), qty: +k.qty || 1, price: fiyat, photoId, productId };
+      if (A.kalemIdx >= 0) A.taslak.items[A.kalemIdx] = kalem; else A.taslak.items.push(kalem);
+      modalKapat(); ciz();
+    } finally { mesgul(el, false); }
+  },
+  'indirim-tur': el => { A.taslak.discountType = el.dataset.k; $$('.ikili-sec button', el.parentElement).forEach(b => b.classList.toggle('secili', b === el)); taslakToplam(); },
+  'teklif-kaydet': el => teklifKaydet(el),
+
+  /* teklif detayı */
+  'wa-teklif': el => { const id = el.dataset.id; setTimeout(() => guncelle(id, { set: { sentAt: Date.now() }, push: { log: kayit("Teklif WhatsApp'tan gönderildi") } }).catch(hataGoster), 400); },
+  'wa-takip': el => { const id = el.dataset.id; setTimeout(() => guncelle(id, { push: { log: kayit("WhatsApp'tan hatırlatma yazıldı") } }).catch(hataGoster), 400); },
+  'wa-durum': el => { const id = el.dataset.id; const q = D.quotes.find(x => x.id === id); setTimeout(() => guncelle(id, { push: { log: kayit('Müşteriye durum bildirildi: ' + asamaAd(q.order.stage)) } }).catch(hataGoster), 400); },
+  'link-kopya': el => kopyala(teklifLink(el.dataset.id)),
+  arandi: el => {
+    const q = D.quotes.find(x => x.id === el.dataset.id); if (!q) return;
+    modalAc(modalBas('Arama notu') + `<form data-form="arandi" class="bolum" style="gap:14px"><input type="hidden" name="id" value="${esc(q.id)}">
+      <label class="alan"><span>Müşteri ne dedi?</span><textarea class="giris" id="ar-not" name="not" placeholder="Örn. Hafta sonu eşiyle gelecek."></textarea></label>
+      <div class="alan"><span>Tekrar ne zaman aransın?</span>
+        <div class="cipler">${[['Yarın', gunEkle(1)], ['3 gün sonra', gunEkle(3)], ['1 hafta sonra', gunEkle(7)], ['Aranmasın', '']].map(([ad, g], n) => `<button type="button" class="cip ${n === 1 ? 'secili' : ''}" data-is="cip" data-hedef="ar-tarih" data-deger="${g}">${ad}</button>`).join('')}</div>
+        <input class="giris" id="ar-tarih" name="tarih" type="date" value="${gunEkle(3)}" aria-label="Sonraki arama günü"></div>
+      <button class="btn buyuk" type="submit">Kaydet</button></form>`);
+  },
+  'siparis-ac': el => {
+    const q = D.quotes.find(x => x.id === el.dataset.id); if (!q) return;
+    modalAc(modalBas('Siparişe çevir') + `<form data-form="siparis" class="bolum" style="gap:14px"><input type="hidden" name="id" value="${esc(q.id)}">
+      <p>${esc(q.customer.name)} · <strong>${para(q.total)}</strong></p>
+      <div class="alanlar cift">
+        <label class="alan"><span>Alınan kapora (₺)</span><input class="giris" id="sp-kapora" name="kapora" inputmode="decimal" placeholder="0"></label>
+        <div class="alan"><span>Ödeme şekli</span><input type="hidden" id="sp-sekil" name="sekil" value="Nakit"><div class="cipler">${ODEME_SEKIL.map((s, n) => `<button type="button" class="cip ${n === 0 ? 'secili' : ''}" data-is="cip" data-hedef="sp-sekil" data-deger="${s}">${s}</button>`).join('')}</div></div>
+      </div>
+      <label class="alan"><span>Teslimat günü</span><input class="giris" id="sp-tarih" name="tarih" type="date"><small>Belli değilse boş bırakın, sonra girersiniz.</small></label>
+      <label class="alan"><span>Teslimat adresi</span><textarea class="giris" id="sp-adres" name="adres" rows="2"></textarea></label>
+      <button class="btn buyuk" type="submit">${ik('tik')} Siparişi onayla</button></form>`);
+  },
+  'kayip-ac': el => {
+    modalAc(modalBas('Neden almadı?') + `<form data-form="kayip" class="bolum" style="gap:14px"><input type="hidden" name="id" value="${esc(el.dataset.id)}">
+      <div class="cipler">${KAYIP_NEDEN.map(n => `<button type="button" class="cip" data-is="cip" data-hedef="ky-neden" data-deger="${esc(n)}">${esc(n)}</button>`).join('')}</div>
+      <label class="alan"><span>Neden</span><input class="giris" id="ky-neden" name="neden" placeholder="Seçin ya da yazın"></label>
+      <button class="btn buyuk" type="submit">Kaybedildi olarak kaydet</button></form>`);
+  },
+  'yeniden-ac': el => guncelle(el.dataset.id, { set: { status: 'acik', lostReason: '', followUpAt: gunEkle(1) }, push: { log: kayit('Teklif yeniden açıldı') } }, 'Teklif yeniden açıldı'),
+  asama: async el => {
+    const id = el.dataset.id, k = el.dataset.k, q = D.quotes.find(x => x.id === id); if (!q || (q.order || {}).stage === k) return;
+    const set = { 'order.stage': k }; if (k === 'teslim') set['order.deliveredAt'] = Date.now();
+    await guncelle(id, { set, push: { log: kayit('Durum: ' + asamaAd(k)) } }, 'Durum güncellendi: ' + asamaAd(k));
+  },
+  'teslim-et': async el => {
+    const id = el.dataset.id, q = D.quotes.find(x => x.id === id); if (!q) return;
+    if (kalan(q) > 0) { ISLER['odeme-ac'](el, null, true); return; }
+    await guncelle(id, { set: { 'order.stage': 'teslim', 'order.deliveredAt': Date.now() }, push: { log: kayit('Durum: Teslim edildi') } }, 'Teslim edildi olarak işaretlendi');
+  },
+  'odeme-ac': (el, e, teslimle) => {
+    const q = D.quotes.find(x => x.id === el.dataset.id); if (!q) return;
+    modalAc(modalBas(teslimle ? 'Teslimatta alınan ödeme' : 'Ödeme ekle') + `<form data-form="odeme" class="bolum" style="gap:14px"><input type="hidden" name="id" value="${esc(q.id)}"><input type="hidden" name="teslim" value="${teslimle ? '1' : ''}">
+      <p>${esc(q.customer.name)} · kalan <strong>${para(kalan(q))}</strong></p>
+      <label class="alan"><span>Alınan tutar (₺)</span><input class="giris" id="od-tutar" name="tutar" inputmode="decimal" value="${kalan(q) || ''}"></label>
+      <div class="alan"><span>Ödeme şekli</span><input type="hidden" id="od-sekil" name="sekil" value="Nakit"><div class="cipler">${ODEME_SEKIL.map((s, n) => `<button type="button" class="cip ${n === 0 ? 'secili' : ''}" data-is="cip" data-hedef="od-sekil" data-deger="${s}">${s}</button>`).join('')}</div></div>
+      <button class="btn buyuk" type="submit">${teslimle ? 'Kaydet ve teslim edildi yap' : 'Ödemeyi kaydet'}</button></form>`);
+  },
+  'teslimat-ac': el => {
+    const q = D.quotes.find(x => x.id === el.dataset.id); if (!q) return; const o = q.order || {};
+    modalAc(modalBas('Teslimat bilgileri') + `<form data-form="teslimat" class="bolum" style="gap:14px"><input type="hidden" name="id" value="${esc(q.id)}">
+      <div class="alanlar cift">
+        <label class="alan"><span>Teslimat günü</span><input class="giris" id="ts-tarih" name="tarih" type="date" value="${esc(o.deliveryDate || '')}"></label>
+        <label class="alan"><span>Saat aralığı</span><input class="giris" id="ts-saat" name="saat" value="${esc(o.slot || '')}" placeholder="Örn. 14:00 – 16:00"></label>
+      </div>
+      <label class="alan"><span>Adres</span><textarea class="giris" id="ts-adres" name="adres" rows="2">${esc(o.address || '')}</textarea></label>
+      <label class="alan"><span>Teslimat ekibi</span><input class="giris" id="ts-ekip" name="ekip" value="${esc(o.team || '')}" placeholder="Örn. Hasan Usta"></label>
+      <label class="alan"><span>Ekip için not</span><input class="giris" id="ts-not" name="not" value="${esc(o.note || '')}" placeholder="Örn. Asansör yok, 3. kat."></label>
+      <button class="btn buyuk" type="submit">Kaydet</button></form>`);
+  },
+  'sil-ac': el => {
+    const q = D.quotes.find(x => x.id === el.dataset.id); if (!q) return;
+    modalAc(modalBas('Teklif silinsin mi?') + `<p>${esc(q.customer.name)} · ${teklifNo(q.no)} · ${para(q.total)}</p><p class="kucuk">Silinen teklif geri getirilemez ve müşterideki bağlantı çalışmaz.</p>
+      <div class="dugmeler"><button class="btn ikincil" data-is="modal-kapat">Vazgeç</button><button class="btn tehlike" data-is="sil-onay" data-id="${esc(q.id)}">Evet, sil</button></div>`);
+  },
+  'sil-onay': async el => { await B.deleteQuote(el.dataset.id); modalKapat(); toast('Teklif silindi'); git('teklifler', true); },
+
+  /* ürünler */
+  'urun-ac': el => {
+    const p = D.products.find(x => x.id === el.dataset.id);
+    A.urun = p ? { id: p.id, name: p.name, price: String(p.price || ''), photoId: p.photoId || '', thumb: p.thumb || '', fotoVeri: '', kucuk: '', createdAt: p.createdAt || Date.now() } : { id: '', name: '', price: '', photoId: '', thumb: '', fotoVeri: '', kucuk: '', createdAt: Date.now() };
+    modalAc(urunModalHtml());
+  },
+  'urun-sil': async () => { await B.deleteProduct(A.urun.id); modalKapat(); toast('Ürün silindi'); },
+
+  /* ayarlar */
+  'personel-ac': () => {
+    const plan = PLAN[D.store.plan] || PLAN.deneme;
+    if (D.users.filter(x => x.active !== false).length >= plan.kisi) { toast(`${plan.ad} paketinde en çok ${plan.kisi} kullanıcı olur.`, true); return; }
+    modalAc(modalBas('Ekibe kişi ekle') + `<form data-form="personel" class="bolum" style="gap:14px">
+      <label class="alan"><span>Adı soyadı</span><input class="giris" id="ps-ad" name="name" required></label>
+      <label class="alan"><span>E-posta</span><input class="giris" id="ps-eposta" name="email" type="email" required autocomplete="off"></label>
+      <label class="alan"><span>Geçici şifre</span><input class="giris" id="ps-sifre" name="pass" required minlength="6" autocomplete="off"><small>En az 6 karakter. Kişiye siz iletin; giriş ekranından değiştirebilir.</small></label>
+      <div class="alan"><span>Görevi</span><input type="hidden" id="ps-rol" name="role" value="danisman"><div class="cipler"><button type="button" class="cip secili" data-is="cip" data-hedef="ps-rol" data-deger="danisman">${ROL.danisman}</button><button type="button" class="cip" data-is="cip" data-hedef="ps-rol" data-deger="teslimat">${ROL.teslimat}</button></div></div>
+      <button class="btn buyuk" type="submit">Ekle</button></form>`);
+  },
+  'personel-durum': async el => { const k = D.users.find(x => x.uid === el.dataset.uid); if (!k) return; await B.updateUser(k.uid, { active: k.active === false }); toast(k.active === false ? 'Hesap açıldı' : 'Hesap kapatıldı'); },
+  'sifre-posta': async () => { await B.resetPass(D.ot.email); toast('E-posta gönderildi: ' + D.ot.email); },
+
+  /* yönetim */
+  'sure-ekle': async el => {
+    const m = (A.magazalar || []).find(x => x.id === el.dataset.id); if (!m) return;
+    const gun = +el.dataset.gun;
+    const yeni = gun === 0 ? Date.now() - 1000 : Math.max(Date.now(), m.paidUntil || 0) + gun * GUN;
+    const yama = { paidUntil: yeni }; if (gun > 0 && m.plan === 'deneme') yama.plan = 'magaza';
+    await B.adminUpdateStore(m.id, yama); Object.assign(m, yama); ciz(); toast(gun ? 'Süre uzatıldı' : 'Abonelik durduruldu');
+  }
+};
+
+const FORMLAR = {
+  giris: v => B.signIn(v.email.trim(), v.pass),
+  kayit: v => B.signUp({ storeName: v.storeName.trim(), name: v.name.trim(), phone: v.phone.trim(), email: v.email.trim(), pass: v.pass }),
+  tamamla: v => B.completeSignUp({ storeName: v.storeName.trim(), name: v.name.trim(), phone: v.phone.trim() }),
+  sifre: async v => { await B.resetPass(v.email.trim()); toast('Sıfırlama bağlantısı gönderildi'); A.girisMod = 'giris'; ciz(); },
+  arandi: async v => {
+    const not = (v.not || '').trim();
+    const ok = await guncelle(v.id, { set: { followUpAt: v.tarih || '' }, push: { log: kayit('Arandı' + (not ? ': ' + not : '') + (v.tarih ? ' (sonraki arama ' + tarih(v.tarih) + ')' : '')) } }, 'Arama notu kaydedildi');
+    if (ok) modalKapat();
+  },
+  siparis: async v => {
+    const kapora = sayi(v.kapora), q = D.quotes.find(x => x.id === v.id); if (!q) return;
+    const siparis = { stage: 'siparis', deliveryDate: v.tarih || '', slot: '', address: (v.adres || '').trim(), team: '', note: '', payments: kapora > 0 ? [{ at: Date.now(), amount: kapora, method: v.sekil || 'Nakit', by: D.ot.user.name }] : [] };
+    const ok = await guncelle(v.id, { set: { status: 'kazanildi', wonAt: Date.now(), followUpAt: '', order: siparis }, push: { log: kayit('Siparişe çevrildi' + (kapora > 0 ? ', kapora ' + para(kapora) : '')) } }, 'Sipariş oluşturuldu');
+    if (ok) modalKapat();
+  },
+  kayip: async v => {
+    const ok = await guncelle(v.id, { set: { status: 'kaybedildi', lostReason: (v.neden || '').trim(), followUpAt: '' }, push: { log: kayit('Kaybedildi' + (v.neden ? ': ' + v.neden.trim() : '')) } }, 'Kaydedildi');
+    if (ok) modalKapat();
+  },
+  odeme: async v => {
+    const tutar = sayi(v.tutar); const deg = { set: {}, push: {} };
+    if (!(tutar > 0) && !v.teslim) { toast('Tutarı yazın.', true); return; }
+    let metin = '';
+    if (tutar > 0) { deg.push['order.payments'] = { at: Date.now(), amount: tutar, method: v.sekil || 'Nakit', by: D.ot.user.name }; metin = 'Ödeme alındı: ' + para(tutar) + ' (' + (v.sekil || 'Nakit') + ')'; }
+    if (v.teslim) { deg.set['order.stage'] = 'teslim'; deg.set['order.deliveredAt'] = Date.now(); metin = (metin ? metin + '. ' : '') + 'Durum: Teslim edildi'; }
+    deg.push.log = kayit(metin);
+    const ok = await guncelle(v.id, deg, v.teslim ? 'Teslim edildi olarak işaretlendi' : 'Ödeme kaydedildi');
+    if (ok) modalKapat();
+  },
+  teslimat: async v => {
+    const q = D.quotes.find(x => x.id === v.id); if (!q) return;
+    const set = { 'order.deliveryDate': v.tarih || '', 'order.slot': (v.saat || '').trim(), 'order.address': (v.adres || '').trim(), 'order.team': (v.ekip || '').trim(), 'order.note': (v.not || '').trim() };
+    const degisti = (q.order || {}).deliveryDate !== set['order.deliveryDate'];
+    const ok = await guncelle(v.id, { set, push: { log: kayit(degisti && v.tarih ? 'Teslimat günü: ' + tarih(v.tarih) : 'Teslimat bilgileri güncellendi') } }, 'Teslimat bilgileri kaydedildi');
+    if (ok) modalKapat();
+  },
+  urun: async v => {
+    const u = A.urun, ad = v.name.trim(), fiyat = sayi(v.price);
+    if (!(fiyat > 0)) { toast('Fiyatı yazın.', true); return; }
+    let photoId = u.photoId, thumb = u.thumb;
+    if (u.fotoVeri) { photoId = await B.putPhoto(u.fotoVeri); fotoBellek.set(photoId, u.fotoVeri); thumb = u.kucuk; }
+    await B.setProduct(u.id || B.newId(), { name: ad, price: fiyat, photoId, thumb, createdAt: u.createdAt });
+    modalKapat(); toast('Ürün kaydedildi');
+  },
+  personel: async v => { await B.addStaff({ name: v.name.trim(), email: v.email.trim(), pass: v.pass, role: v.role === 'teslimat' ? 'teslimat' : 'danisman' }); modalKapat(); toast('Kişi eklendi'); },
+  magaza: async v => { await B.updateStore({ name: v.name.trim(), phone: v.phone.trim(), whatsapp: v.whatsapp.trim(), address: v.address.trim() }); toast('Mağaza bilgileri kaydedildi'); },
+  'teklif-ayar': async v => { await B.updateStore({ validDays: Math.max(1, Math.round(sayi(v.validDays)) || 7), followDays: Math.max(1, Math.round(sayi(v.followDays)) || 3), terms: v.terms.trim(), msgQuote: v.msgQuote.trim() === VARS_MESAJ ? '' : v.msgQuote.trim(), kvkk: v.kvkk.trim() }); toast('Teklif ayarları kaydedildi'); },
+  hesap: async v => { await B.updateUser(D.ot.uid, { name: v.name.trim() }); D.ot.user.name = v.name.trim(); toast('Adınız kaydedildi'); }
+};
+
+function taslakToplam() { const t = A.taslak; if (!t) return; const k = $('#t-toplam'); if (k) k.innerHTML = toplamHtml(t); const a = $('#t-alt'); if (a) a.textContent = para(hesap(t).toplam); }
+
+document.addEventListener('click', e => {
+  if (e.target.classList && e.target.classList.contains('perde')) { modalKapat(); return; }
+  const el = e.target.closest('[data-is]'); if (!el) return;
+  const is = ISLER[el.dataset.is]; if (!is) return;
+  if (el.tagName !== 'A') e.preventDefault();
+  Promise.resolve().then(() => is(el, e)).catch(hataGoster);
+});
+document.addEventListener('submit', e => {
+  const f = e.target.closest('form[data-form]'); if (!f) return;
+  e.preventDefault();
+  const v = Object.fromEntries(new FormData(f).entries());
+  const btn = f.querySelector('button[type=submit]');
+  mesgul(btn, true);
+  Promise.resolve().then(() => FORMLAR[f.dataset.form](v, f)).catch(hataGoster).finally(() => mesgul(btn, false));
+});
+document.addEventListener('input', e => {
+  const el = e.target;
+  if (el.dataset.t && A.taslak) { yolYaz(A.taslak, el.dataset.t, el.value); if (el.dataset.t === 'discountVal') taslakToplam(); }
+  else if (el.dataset.k && A.kalem) A.kalem[el.dataset.k] = el.value;
+  else if (el.dataset.in === 'ara') { A.ara = el.value; const k = $('#liste-kap'); if (k) k.innerHTML = teklifListeHtml(); }
+  else if (el.dataset.in === 'urun-ara') { A.urunAra = el.value; const k = $('#liste-kap'); if (k) k.innerHTML = urunListeHtml(); }
+  else if (el.dataset.in === 'kalem-ara') { A.kalemAra = el.value; const k = $('#kalem-liste'); if (k) k.innerHTML = kalemListeHtml(); }
+});
+document.addEventListener('change', async e => {
+  const el = e.target;
+  try {
+    if (el.dataset.kc && A.kalem) { A.kalem[el.dataset.kc] = el.checked; return; }
+    if (el.dataset.degis === 'rol') { await B.updateUser(el.dataset.uid, { role: el.value }); toast('Görev güncellendi'); return; }
+    if (el.dataset.degis === 'plan') { const m = (A.magazalar || []).find(x => x.id === el.dataset.id); await B.adminUpdateStore(el.dataset.id, { plan: el.value }); if (m) m.plan = el.value; toast('Paket güncellendi'); ciz(); return; }
+    if (el.dataset.dosya && el.files && el.files[0]) {
+      const dosya = el.files[0], tur = el.dataset.dosya;
+      if (tur === 'logo') { const logo = await gorselKucult(dosya, 240, 110000, 'png'); await B.updateStore({ logo }); toast('Logo kaydedildi'); return; }
+      const [buyuk, kucuk] = await Promise.all([gorselKucult(dosya, 900, 120000), gorselKucult(dosya, 160, 9000)]);
+      const hedef = tur === 'kalem' ? A.kalem : A.urun; if (!hedef) return;
+      hedef.fotoVeri = buyuk; hedef.kucuk = kucuk;
+      if (tur === 'urun') { const a = $('#ur-ad'), f = $('#ur-fiyat'); if (a) hedef.name = a.value; if (f) hedef.price = f.value; }
+      modalAc(tur === 'kalem' ? kalemModalHtml() : urunModalHtml());
+    }
+  } catch (err) { hataGoster(err); }
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') modalKapat(); });
+window.addEventListener('hashchange', () => {
+  const h = location.hash;
+  if (yerineYaz) { yigin[yigin.length - 1] = h; yerineYaz = false; }
+  else if (yigin.length > 1 && yigin[yigin.length - 2] === h) yigin.pop();
+  else yigin.push(h);
+  modalKapat(); document.title = AYAR.uygulamaAdi; ciz(); window.scrollTo(0, 0);
+});
+
+/* ---------------- başlangıç ---------------- */
+document.title = AYAR.uygulamaAdi;
+B.onAuth(ot => {
+  D.kop.forEach(f => { try { f(); } catch (e) { /* yoksay */ } });
+  D.kop = []; D.yuk = {}; D.ot = ot; if (ot) A.girisMod = 'giris'; D.store = null; D.users = []; D.quotes = []; D.products = []; D.views = {};
+  if (ot && ot.user && ot.user.active !== false) {
+    const rol = ot.user.role;
+    const izle = (tur, ata) => D.kop.push(B.watch(tur, v => { ata(v); D.yuk[tur] = true; veriGeldi(); }));
+    izle('store', v => { D.store = v; });
+    izle('quotes', v => { D.quotes = v || []; });
+    if (rol !== 'teslimat') { izle('products', v => { D.products = v || []; }); izle('views', v => { D.views = v || {}; }); }
+    if (rol === 'sahip') izle('users', v => { D.users = v || []; });
+  }
+  ciz();
+});
+ciz();
+
+})();
+</script>
+</body>
+</html>
